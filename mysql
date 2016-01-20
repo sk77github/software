@@ -21,4 +21,4 @@ server_id = 113
 shell> bin/mysql_ssl_rsa_setup              # MySQL 5.7.6 and up
 shell> chown -R root .
 shell> chown -R mysql data mysql-files
-shell> bin/mysqld_safe --user=mysql &
+bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
