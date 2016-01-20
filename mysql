@@ -1,3 +1,24 @@
 install 
 
 wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.10-linux-glibc2.5-x86_64.tar.gz
+shell> groupadd mysql
+shell> useradd -r -g mysql -s /bin/false mysql
+shell> cd /usr/local
+shell> tar zxvf /path/to/mysql-VERSION-OS.tar.gz
+shell> ln -s full-path-to-mysql-VERSION-OS mysql
+shell> cd mysql
+shell> mkdir mysql-files
+shell> chmod 770 mysql-files
+shell> chown -R mysql .
+shell> chgrp -R mysql .
+bin/mysqld --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --initialize --user=mysql   # MySQL 5.7.6 and up
+（如果之前有安装 可以指定配置文件 --defaults-file要是第一个参数
+ 配置文件中必须指定
+datadir = /usr/local/mysql/data
+port = 3307
+server_id = 113
+）
+shell> bin/mysql_ssl_rsa_setup              # MySQL 5.7.6 and up
+shell> chown -R root .
+shell> chown -R mysql data mysql-files
+shell> bin/mysqld_safe --user=mysql &
