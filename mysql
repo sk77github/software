@@ -23,3 +23,4 @@ shell> chown -R root .
 shell> chown -R mysql data mysql-files
 bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
 bin/mysql -u root -p --port=3307 -h localhost  （服务启动后，使用当前安装版本的mysql客户端登录）
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
