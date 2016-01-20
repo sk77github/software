@@ -22,3 +22,4 @@ shell> bin/mysql_ssl_rsa_setup              # MySQL 5.7.6 and up
 shell> chown -R root .
 shell> chown -R mysql data mysql-files
 bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
+bin/mysql -u root -p --port=3307 -h localhost  （服务启动后，使用当前安装版本的mysql客户端登录）
