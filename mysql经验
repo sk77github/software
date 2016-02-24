@@ -1,0 +1,55 @@
+MySQL误删除数据之后的恢复
+
+下午的时候开发人员直接在没有备份的情况下删除了一些重要的数据，幸亏我们有使用xtrabackup对数据库每天备份一次（我们的binlog_format是statement，如果是row的话，delete语句会在binlog中记录有之前的信息可以用来进行恢复，这也是row format的一个优点）。
+
+下面简要的说下恢复的步骤，希望对一些朋友有所帮助。
+一、开发人员的delete语句
+delete数据之前最好先select一下，select review这些数据确实是自己需要删除的数据，之后再备份一下，然后就可以删除了。否则删掉之后，让DBA来用备份恢复，这个真的非常耗时，而且很费力。最好的就是把删除操作做成一个工具，工具来强制备份，依靠人而不是工具或者制度就跟我党一样不靠谱。
+
+mysql#20> delete from acl_permission where name not in ('mtupm', 'mtsg', 'mtoa', 'mtgis', 'mtks', 'mtpmc', 'mtdeal') and id > 0;
+Query OK, 28 rows affected (0.01 sec)
+二、启动xtrabackup的备份数据
+备份目录的位置是/opt/backup/db/db34，最好在appy之后再备份一次。
+首先使用innobackupex进行apply-log，xtrabackup会对copy的redolog进行innodb标准的crash-recovery操作；使用use-memory可以加快apply-log的速度
+innobackupex –apply-log –use-memory=4g ./
+chown -R mysql:mysql /opt/backup/db/db34
+
+修改mysql的配置文件/etc/my.cnf，添加上backup-my.cnf中的内容，注意最后一行的replicate-do-table=upm.acl_permission，为了加快恢复的速度，因此只需要恢复出问题的表即可。
+
+[mysqld5004]
+port=5004
+datadir=/opt/backup/db/db34
+innodb_data_home_dir=/opt/backup/db/db34
+innodb_log_group_home_dir=/opt/backup/db/db34
+pid-file=/opt/backup/db/db34/mysql.pid
+socket=/opt/tmp/mysql5004.sock
+innodb_locks_unsafe_for_binlog=1
+server_id=5004
+innodb_support_xa=0
+innodb_data_file_path=ibdata1:100M:autoextend
+innodb_log_files_in_group=3
+innodb_log_file_size=1073741824
+innodb_fast_checksum=0
+innodb_page_size=16384
+innodb_log_block_size=512
+replicate-do-table=upm.acl_permission
+启动备份示例
+
+mysqld_multi start 5004 --no-log
+三、寻找破坏位置
+根据开发提供的删除操作的时间，来找到binlog的位置点，找到之后往前退一个。
+mysql-bin.004105
+at 526974047
+
+# at 526974470
+#130718 15:26:41 server id 185  end_log_pos 526974657   Query   thread_id=156517709     exec_time=0     error_code=0
+use upm/*!*/;
+SET TIMESTAMP=1374132401/*!*/;
+delete  from acl_permission where name not in ('mtupm', 'mtsg', 'mtoa', 'mtgis', 'mtks', 'mtpmc', 'mtdeal') and id > 0
+/*!*/;
+四、同步数据
+通过start slave until master_log_file的功能将slave同步到出问题操作的前一步
+
+[localhost][admin]@(none)04:34:19>start slave until master_log_file='mysql-bin.004105',master_log_pos=526974047;
+五、恢复数据
+同步追上之后，就可以使用mysqldump将数据迁移到线上服务，整个恢复操作就结束了。
