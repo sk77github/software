@@ -1,2 +1,5 @@
 https://yq.aliyun.com/articles/2237?spm=5176.blog2238.yqblogcon1.7.e5fyEy
 https://yq.aliyun.com/articles/2238?spm=5176.blog2237.yqblogcon1.7.rfULpb
+
+《高性能MySQL（第三版）》，阿里的几个DBA翻译的，非常经典，值得耐心阅读；开发人员可以阅读这一本即可应对大部分问题。
+《MySQL技术内幕：InnoDB存储引擎（第2版）》，通过这个可以了解到很多Innodb运行的内部原理。
