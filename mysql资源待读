@@ -3,3 +3,24 @@ https://yq.aliyun.com/articles/2238?spm=5176.blog2237.yqblogcon1.7.rfULpb
 
 《高性能MySQL（第三版）》，阿里的几个DBA翻译的，非常经典，值得耐心阅读；开发人员可以阅读这一本即可应对大部分问题。
 《MySQL技术内幕：InnoDB存储引擎（第2版）》，通过这个可以了解到很多Innodb运行的内部原理。
+
+博客
+
+下面列出的博客主要是一些非常经典的博客，片片经典，可以通过阅读历史文章来扎实自己的知识。
+
+MySQL Performance Blog，《High Performance MySQL》的作者也是Percona的团队在维护的一个博客，包含大量的实战经验和原理分析以及Percona的最新软件以及评测。
+何登成的博客，以及作者的一些PPT，分享了大量对与MySQL的内部运行原理分析，深入浅出，非常值得去学习。
+YOSHINORI MATSUNOBU’S BLOG，作者编写了包含MHA、Replication Boost等诸多软件，现在在Facebook的MySQL团队，做到深入浅出，历史文章值得认真阅读。
+Transactions on InnoDB，InnoDB团队维护的博客，披露了大量InnoDB引擎的实现细节。此博客的内容，主要有两方面：1. MySQL发布新版本时，会有大量关于新版本中改进技术的介绍；2. 最近，InnoDB团队开始逐渐披露InnoDB各模块的实现细节，包括：Redo、Transaction Lock、Row Format等。此博客，是学习InnoDB引擎的不二选择。
+DimitriK’s (dim) Weblog，作者：Dimitri KRAVTCHUK。MySQL性能测试组成员，我心目中最欣赏的测试人员的模版。作为一个测试人员，开发自动化测试工具，对MySQL每一个版本进行性能测试，分析MySQL的性能瓶颈，熟知MySQL的整体架构与MySQL的源码。测试人员达到这种级别，对项目的巨大反哺作用，才得到了真正的体现。此外，DimitriK的每一篇博客，都写得非常好，从中学到了很多，无论是关于MySQL，还是关于测试。
+一个故事@MySQL DBA，也是《高性能MySQL》的译者，阿里的DBA，博客也写的很好。
+追风刀·丁奇，阿里的DBA，MySQL 主从同步Transfer的作者，文章披露了很多MySQL底层的一些知识，学到了很多知识。
+系统技术非业余研究，霸爷的博客，涉猎范围很广泛，从这里可以了解到很多Linux底层的一些知识，反过来对与理解MySQL帮助很大。
+技术大会PPT
+
+技术大会的PPT，可以了解到业界的一些最新进展和使用方法，提供很多线索并且也可以通过别人的成功经验支撑自己的一些想法。
+
+Percona meeting
+国内的数据库大会
+阿里技术嘉年华里面关于数据库的session
+Oracle社区以及官方的一些PPT
