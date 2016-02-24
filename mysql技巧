@@ -1,0 +1,150 @@
+通过information_schema获取信息
+
+分析出当前连接过来的客户端ip的分布情况，比解析show processlist要简单一些：
+select substring(host,1,char_length(host)-6) as ip ,count(*) as count from PROCESSLIST group by ip order by count desc ;
+
+分析处于Sleep状态的连接分布情况：
+select substring(host,1,char_length(host)-6) as ip ,count(*) as count from PROCESSLIST where COMMAND=”Sleep” group by ip order by
+count desc ;
+
+查看表的容量以及增长状况：
+有个table表，其中TABLE_NAME是表名称，TABLE_SCHEMA是库的名称，DATA_LENGTH+ INDEX_LENGTH的结果就是表的大小，TABLE_ROWS表的行数，
+注意全是统计信息不是准确信息。
+如果查看增长情况的话，就在两个时间间隔中获取一次就可以了。
+获取某个表所有的列名
+select COLUMN_NAME from COLUMNS where TABLE_NAME=”XXX” and TABLE_SCHEMA=”XXX”;
+
+
+
+
+
+
+
+MySQL Slave产生延迟的原因
+
+Mysql的复制（replication）是异步的，从Master上复制到Slave上。整个过程如下：
+
+Slave上面的IO线程连接上Master，并请求从指定日志文件的指定位置（或者从最开始的日志）之后的日志内容；
+Master接收到来自Slave的IO进程的请求后，通过负责复制的IO线程根据请求信息读取制定日志指定位置之后的日志信息，返回给Slave 的IO线程。
+返回信息中除了日志所包含的信息之外，还包括本次返回的信息已经到Master端的bin-log文件的名称以及bin-log的位置；
+Slave的IO线程接收到信息后，将接收到的日志内容依次添加到Slave端的relay-log文件的最末端，并将读取到的Master端的 bin-log的文件名和
+位置记录到master-info文件中，以便在下一次读取的时候能够清楚的高速Master“我需要从某个bin-log的哪个位置开始往后的日志内容，请发给我”；
+Slave的SQL线程检测到relay-log中新增加了内容后，会马上解析relay-log的内容成为在Master端真实执行时候的那些可执行的内容，并在自身执行。
+通过上面的分析可以看到MySQL Slave是通过单线程顺序replay这些binlog的，也就是这个过程是全局的，因此延迟是对整个示例而言，而不是针对其
+中的某些库而言的。
+
+因此可能会因为如下的原因导致slave的延迟：
+
+执行了一个耗时较久的语句，比如暴力的update、delete、insert了过多的记录，可以通过binlog确认。
+解决方法：将大的更新SQL拆分成小的多次进行。
+Mater上在较短的时间执行了大量的更新操作（update、delete、insert），Slave来不及执行，导致，可以通过查看zabbix监控来确定原因。
+解决方法：控制更新的频率（中间sleep），减少延迟。
+Slave上IO恶化（大量的读取操作等），导致Slave上Replay binlog比较缓慢。
+解决方法：找到造成IO恶化的语句，想办法解决。
+
+
+
+
+
+
+
+mysql延迟查看
+Seconds_Behind_Master在sql_thread正在运行时，通过当前系统时间减去sql_thread最近接受到的binlog的timestamp，
+然后在减去master和slave的系统时间差；如果sql_thread当前没有运行，则显示0。
+
+存在的问题是：如果io_thread因为网络等缘故延迟非常大，会导致binlog迟迟没有发过来，这个时候sql_thread已经执行完毕手头的binlog，
+处于空闲状态，因此Seconds_Behind_Master会显示为0，实际上已经产生延迟，在网络延迟较大的环境下需要才用类似heartbeat的机制来解决。
+
+
+
+
+
+
+
+数据库Sharding
+
+Sharding的基本思想就要把一个数据库切分成多个部分放到不同的数据库(server)上，从而缓解单一数据库的性能问题。
+Sharding分为垂直拆分和水平拆分两种。
+
+垂直拆分
+
+在业务的初期，不可避免会将多个系统的db放在同一台mysql instance上，伴随这业务的不断壮大，需要进行“垂直拆分”，将不同的业务拆分出去。
+
+拆分原因：
+
+防止其他db使用不当，比如说有问题的SQL（可能是未使用到索引，可能是一个复杂的统计SQL），导致服务器的IO、CPU消耗严重，影响了其他的db；
+db的账号设计不合理，导致不同db之间存在数据的交叉访问，这样存在数据泄露的风险，比如某个db因为SQL注入，其他db的数据也被拖库；
+资源上的不足，比如说随着业务的不断扩大，单台的instance受到io、cpu、disk等硬件的限制，很难支撑起诸多的db；
+分别针对这三个原因进行解释：
+
+避免影响主要两种思路，第一种思路通过业务SQL的审核、限制SQL资源的消耗来实现，第二种思路就是拆分到不同的物理机或者不同的instance上，
+通过cgroup等来限制对于io、cpu等资源的使用；
+可以使用更加细分的权限设置来避免这种跨库的访问；
+这种情况下，只能进行拆分或者scale up的策略来进行；
+拆分方法：
+
+通过MySQL Replication，搭建Slave，在业务确定没有use db1;update db2.table的情况下可以使用replicate-do-db或者replicate-do-table避免
+copy以及复制大量的数据；
+业务更改写入源，写入新的master；
+通过binlog检查老的master中需要拆分出去的db是否还有写入；
+在新的master的执行“stop slave”;
+观察一段时间没有写入之后，将需要拆分出去的table全部rename，防止业务更改写入源的不彻底，早点发现问题；
+老的master上的table备份之后删除；
+
+水平拆分
+水平拆分是将访问频繁的大数据量的表，按照某种规则拆分到多个表中，每个表只包含一部分数据。
+
+拆分的规则常见的方式就是按照求余的方式进行；这个网上有很多的讨论，在这里不在细说。
+
+存在问题：拆分之后的如果读取涉及到多张表的时候，需要多次请求进行merge；也可以使用MySQL的partition，MySQL server层会自动的进行merge。
+
+拆分方法：
+
+可以参照osc的实现原理：创建分表，使用trigger将增量数据迁移到分表中，使用lock in share mode对存量数据进行一点点的迁移（减少对服务器以及
+Slave的压力）。
+
+过程：
+
+创建分表；
+创建trigger，将增量的变更根据分表规则应用到不同的新的分表上；
+执行SELECT CHUNK lock in share mode，根据分表规则将历史数据导入到新的分表中；
+业务更新写入源，将新的写入写入到分表中；
+
+
+
+
+
+
+
+
+
+
+mysql读取配置文件的顺序
+linux
+
+/etc/my.cnf
+
+/etc/mysql/my.cnf
+
+/usr/etc/my.cnf
+
+~/.my.cnf
+
+Windows:
+
+C:\Windows\my.ini 
+C:\Windows\my.cnf 
+C:\my.ini 
+C:\my.cnf 
+C:\Program Files\MySQL\MySQL Server 5.5\my.ini 
+C:\Program Files\MySQL\MySQL Server 5.5\my.cnf
+一个rd执行sql时报错：
+
+[mysql#3> delete from checklog where createtime < '2014-08-13';
+ERROR 1175 (HY000): You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column
+
+检查/etc/my.cnf、命令行参数之后，结果最后发现在该用户的~/.my.cnf文件中定义了mysql的参数
+
+[mysql]
+
+safe-updates
