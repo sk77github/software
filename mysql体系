@@ -11,6 +11,10 @@ MySQL数据库实例在系统上的表现就是一个进程
 ps -ef | grep mysqld
 ps aux | grep mysql
 
+连接MySQL操作是一个连接进程和MySQL数据库实例进行通信。从程序设计的角度来说，本质上是进程通信。
+常用的进程通信方式有管道、命名管道、命名字、TCP/IP套接字、UNIX域套接字。
+MySQL数据库提供的连接方式从本质上看都是上述提及的进程通信方式。
+
 查看当MySQL数据库实例启动时，会在哪些位置查找配置文件
 [root@xen-server bin]#mysql--help|grep my.cnf
 order of preference,my.cnf,$MYSQL_TCP_PORT,
