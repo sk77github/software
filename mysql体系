@@ -1,0 +1,23 @@
+通常MySQL数据库的权限为mysql∶mysql
+
+MySQL被设计为一个单进程多线程架构的数据库
+MySQL数据库实例在系统上的表现就是一个进程
+可以以下两个命令查看
+ps -ef | grep mysqld
+ps aux | grep mysql
+
+查看当MySQL数据库实例启动时，会在哪些位置查找配置文件
+[root@xen-server bin]#mysql--help|grep my.cnf
+order of preference,my.cnf,$MYSQL_TCP_PORT,
+/etc/my.cnf/etc/mysql/my.cnf/usr/local/mysql/etc/my.cnf～/.my.cnf 
+MySQL数据库会以读取到的最后一个配置文件中的参数为准。
+
+mysql --help输出截取（不同的版本输出可能不一样）：
+Default options are read from the following files in the given order:
+/etc/mysql/my.cnf /etc/my.cnf ~/.my.cnf 
+The following groups are read: mysql client
+The following options may be given as the first argument:
+--print-defaults        Print the program argument list and exit.
+--no-defaults           Don't read default options from any option file.
+--defaults-file=#       Only read default options from the given file #.
+--defaults-extra-file=# Read this file after the global files are read.
