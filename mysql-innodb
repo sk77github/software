@@ -1,6 +1,6 @@
 InnoDB存储引擎支持事务，其设计目标主要面向在线事务处理（OLTP）的应用。
 
-事务四个特点
+事务ACID
 事务隔离性的四个级别
 行锁
 外键
@@ -13,6 +13,13 @@ next-key locking
 预读（read ahead）
 
 聚集索引
+
+
+recovery:
+WAL: write ahead logging
+repeating history during redo
+logging changes during undo
+
 
 InnoDB存储引擎将数据放在一个逻辑的表空间中
 ibd文件
