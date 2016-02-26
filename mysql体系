@@ -16,7 +16,8 @@ ps aux | grep mysql
 MySQL数据库提供的连接方式从本质上看都是上述提及的进程通信方式。
 
 连接到MySQL实例时，MySQL数据库判断发起请求的客户端IP是否允许连接到MySQL实例。
-mysql权限相关，在mysql库名内表名为user
+mysql权限相关，在mysql库名内表名为user。
+mysql权限相关命令，见https://github.com/sk77github/software/blob/master/mysql%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4 权限部分
 
 查看当MySQL数据库实例启动时，会在哪些位置查找配置文件
 [root@xen-server bin]#mysql--help|grep my.cnf
