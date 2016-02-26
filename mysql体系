@@ -15,6 +15,9 @@ ps aux | grep mysql
 常用的进程通信方式有管道、命名管道、命名字、TCP/IP套接字、UNIX域套接字。
 MySQL数据库提供的连接方式从本质上看都是上述提及的进程通信方式。
 
+连接到MySQL实例时，MySQL数据库判断发起请求的客户端IP是否允许连接到MySQL实例。
+mysql权限相关，在mysql库名内表名为user
+
 查看当MySQL数据库实例启动时，会在哪些位置查找配置文件
 [root@xen-server bin]#mysql--help|grep my.cnf
 order of preference,my.cnf,$MYSQL_TCP_PORT,
