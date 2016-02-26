@@ -1,0 +1,18 @@
+InnoDB存储引擎支持事务，其设计目标主要面向在线事务处理（OLTP）的应用。
+
+事务四个特点
+事务隔离性的四个级别
+行锁
+外键
+MVCC
+next-key locking
+
+插入缓冲（insert buffer）
+二次写（double write）
+自适应哈希索引（adaptive hash index）
+预读（read ahead）
+
+聚集索引
+
+InnoDB存储引擎将数据放在一个逻辑的表空间中
+ibd文件
