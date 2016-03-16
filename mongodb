@@ -25,6 +25,16 @@ yum install -y mongodb-org
 如果想开机自启动：
 chkconfig mongod on
 
+----------------------------------------------------------------------------------------------------------------
+删除：
+
+删除程序
+yum erase $(rpm -qa | grep mongodb-org)
+
+删除数据和日志
+rm -r /var/log/mongodb
+rm -r /var/lib/mongo
+
 ------------------------------------------------------------------------------------------------------------
 配置：
 The MongoDB instance stores its data files in /var/lib/mongo and its log files in /var/log/mongodb by default,
@@ -35,4 +45,6 @@ and /var/log/mongodb directories to give this user access to these directories.
 
 -------------------------------------------------------------------------------------------------------------
 管理：
-service mongod start   启动
+
+使用service方式管理
+service mongod start   
