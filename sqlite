@@ -1,0 +1,8 @@
+
+打开数据库
+sqlite3 /opt/graphite/storage/graphite.db
+
+打开数据库后执行
+.help                    获取帮助
+.tables                  查看所有表
+.schema [table]          查看表结构
