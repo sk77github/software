@@ -1,1 +1,14 @@
+
 zabbix
+
+
+
+show global status;       查看全局状态
+show global variables;    查看全局变量设置
+mysqladmin                MySQL管理工具
+show master status;       查看Master状态
+show slave status;        查看Slave状态
+show binary logs;         查看二进制日志文件
+show engine innodb status\G    查看InnoDB存储引擎状态
+show engine myisam status\G    查看MyISAM存储引擎状态
+还有通过查看information_schema 这个数据库获取InnoDB存储引擎相关信息
