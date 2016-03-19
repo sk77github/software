@@ -1,3 +1,8 @@
+很多人对RAID5的性能有些质疑，为什么redo不能放在RAID5上，因为IO比较小，如果不能写满整个条带，需要把条带中的数据先读出来，
+然后算好校验再写回去，所以性能比RAID10差很多。而对于吞吐类型的顺序读写，RAID5的性能很好，不比RAID10差。 
+
+
+
 RAID基础，RAID10与RAID01比较，RAID10与RAID5比较
 
 转自：http://btxigua.itpub.net/post/34419/406437
