@@ -53,3 +53,26 @@ delete  from acl_permission where name not in ('mtupm', 'mtsg', 'mtoa', 'mtgis',
 [localhost][admin]@(none)04:34:19>start slave until master_log_file='mysql-bin.004105',master_log_pos=526974047;
 五、恢复数据
 同步追上之后，就可以使用mysqldump将数据迁移到线上服务，整个恢复操作就结束了。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+关于set global sql_slave_skip_counter=N 命令的一些点
+1、set global sql_slave_skip_counter=N中的N是指跳过N个event
+   2、最好记的是N被设置为1时，效果跳过下一个事务。
+   3、跳过第N个event后，位置若刚好落在一个事务内部，则会跳过这整个事务
+   4、一个insert/update/delete不一定只对应一个event，由引擎和日志格式决定
