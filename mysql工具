@@ -2,3 +2,13 @@ mysqlpump
 mk-slave-prefetch
 
 percona的工具集
+pt-duplicate-key-checker
+pt-online-schema-change
+pt-query-digest
+pt-table-checksum
+pt-kill
+
+
+
+
+inception
