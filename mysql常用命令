@@ -1,1 +1,266 @@
 权限相关：
+
+
+mysql升级：
+Where can I find information on how to migrate from MySQL 5.5 to MySQL 5.6?
+
+For detailed upgrade information, see Section 2.11.1, “Upgrading MySQL”. Do not skip a major version when upgrading, but rather
+complete the process in steps, upgrading from one major version to the next in each step. This may seem more complicated, 
+but it will you save time and trouble—if you encounter problems during the upgrade, their origin will be easier to identify, 
+either by you or—if you have a MySQL Enterprise subscription—by MySQL support.
+
+-------------------------------------------------------------------------------------------------------------
+
+insert ignore into testtb(id,name,age)values(1,"aa",13); 
+replace into testtb(id,name,age)values(1,"aa",12); 
+
+查看mysql各种配置
+show global variables like %""%; 
+
+mysql授权：
+mysql> GRANT SELECT, INSERT , UPDATE , DELETE,CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES ON
+sxw.* TO 'sxwphper'@'localhost' IDENTIFIED BY '';     
+mysql> flush privileges;
+
+查看mysql当前登录用户
+select user();
+查看mysql当前使用的数据库
+select database();
+
+清空表
+truncate table
+
+mysql函数
+update dede_addonarticle set body = replace(`body`,'巨人','兄妹情深') where aid = 3577;
+当awk使
+select typedir,replace(concat(typedir,'/*.html'),'{cmspath}','Disallow: ') from dede_arctype;
+
+
+xargs
+mysql -u root -p -e "show databases" | grep tv | xargs >> index.html 
+
+
+mysql操作语法：
+
+常用检查慢查询语法：
+tail -500 slow.log | grep Query_time |awk '{if ($7 > 300); print $0}'
+
+
+单行建表样例(一般用于windows命令行）：
+CREATE TABLE `user_info` (`user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',`user_name` varchar(40) not null DEFAULT '' 
+COMMENT '用户名称',UNIQUE KEY (grade),KEY `idx_source_type_login_name` (`source_type`,`login_name`(255)))
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息';
+
+
+建表样例：
+ CREATE TABLE `user_info` (
+  `user_id` bigint(20) NOT NULL COMMENT '用户编号',
+  `source_type` tinyint(4) NOT NULL,
+  `user_name` varchar(40) DEFAULT NULL COMMENT '用户名称',
+  `score` int(11) DEFAULT NULL,
+  `score_order` int(11) DEFAULT NULL COMMENT '用户排名',
+  `grade` int(11) DEFAULT NULL COMMENT '用户级别',
+  `last_login` datetime DEFAULT NULL,
+  `poi_name` varchar(100) DEFAULT NULL,
+  `poi_longitude` double DEFAULT NULL,
+  `private_level` tinyint(4) DEFAULT NULL,
+  time timestamp not null default current_timestamp on update current_timestamp,
+  `first_login` datetime DEFAULT NULL,
+  PRIMARY KEY (`source_type`,`user_id`),
+  UNIQUE KEY (grade),
+  KEY `idx_source_type_login_name` (`source_type`,`login_name`(255))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息' 
+
+alter样例：
+
+ALTER TABLE dede_addonarticle ADD COLUMN `verycd_source_id` INT(11) not null DEFAULT -1987 COMMENT '资源在verycd上对应的页面的URL的id，
+-1987是随便设定的数，表示资源不是采集自verycd',add index idx_verycd_source_id(verycd_source_id);
+（此条语句，如果原表里已有数据，则已有的数据行新添加的verycd_source_id列，值也是-1987）
+
+ALTER TABLE rpt_day_deal ADD COLUMN(
+   `buy_count_distinct` INT(11) DEFAULT NULL COMMENT '排重购买数',
+   `certi_count` INT(11) DEFAULT NULL COMMENT '验证数',
+   `certi_count_distinct` INT(11) DEFAULT NULL COMMENT '排重验证数',
+   `refund_num` INT(11) DEFAULT NULL COMMENT '退款数',
+   `refund_num_distinct` INT(11) DEFAULT NULL COMMENT '排重退款数',
+   `refund_money` BIGINT(20) NOT NULL COMMENT '退款金额',
+   `argue_count` INT(11) DEFAULT NULL COMMENT '客服投诉数'
+);       
+
+alter修改列名
+
+mysql>  alter table dede_arcplay change column litpic_70_70 litpic_116_65 char(100) NOT NULL DEFAULT '' COMMENT '116乘65的缩略图路径';
+
+\P more（在show processlist执行之前操作，可一点一点的看）
+
+
+
+用nc冷备：
+源机器：tar -cf - data  | nc -l 80
+目标机器：nc 10.3.20.86（此ip为源机器ip） 80 | tar -xf -
+
+mysqldump
+mysqldump -u admin -p -h 10.3.20. niux ORDER_LOGISTICS_INFO_FOLLOW > ORDER_LOGISTICS_INFO_FOLLOW.sql
+mysqldump --no-create-db --no-create-info -u admin -p -h 10.3.16.140 niux_acl acl_access > /data/xuwu/20120411_niuxacl_acl_access.sql              
+mysqldump -h user1.kdb.d.kaixin.com fb place_combo -n -t| mysql -h stuff.db fb
+
+
+mysqlbinlog
+(导这个时间段的log到文件)mysqlbinlog --start-date="2011-11-07 11:30:00" --stop-date="2011-11-07 11:35:00" fb-bin.001220 > video_test
+mysqlbinlog  fb-bin.000012  --start-position=491494924   --stop-position=499696486
+
+删binlog：
+rm -f fb-bin.000[345]?? （正则表达式匹配）
+r -f fb-bin.0003??
+
+grant
+GRANT ALL PRIVILEGES ON `niux_common`.* TO 'super'@'localhost' IDENTIFIED BY '';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `hot`.* TO ''@'ip' IDENTIFIED BY '';
+
+mysql  （参数 -f  可强制执行）
+mysql --user=admin --password= --host=kaixin.com temp  -e "alter table test add column test_char char(15) not null" 
+mysql -u admin -p -h nui3.db niux_common < create_table_nuomi4.sql 
+
+
+启动多实例 
+mysqld_multi stop 8,10-13
+mysqld_multi  --no-log  stop 3308 --password=   
+
+
+取得  正在运行的端口号 ：
+ps aux| grep mysql | grep -o "\-\-port=[0-9]\+" | grep -o "[0-9]\+"
+
+load data infile
+mysql> load data infile '/tmp/huodong_card.txt' into table huodong_card(card_num,card_code);
+load data infile '/tmp/huodong_comix.txt' into table huodong_comix
+(name  , mobile  ,email, profession ,corporation , speech ,vote ,tinypicUrl, user_id );  
+
+select into outfile
+select name,mobile,email,profession,corporation,speech,vote,tinypicUrl,picUrl,user_id from huodong_comix 
+into outfile '/tmp/huodong_comix.txt';
+
+
+mysqladmin
+mysqladmin shutdown  --socket=/data/xuwu/tmp/mysql_slave.sock（关mysql）
+mysqladmin extended-status -i 1 -r -uroot -p | grep -e "Com_select"（查找目前qps）  
+
+DDL
+alter table family_snapshot change head_url head_url varchar(600) not null , drop column family_id;
+
+清空表数据：TRUNCATE huodong_zhanzuo
+
+修改自增ID：alter table huodong_comix  AUTO_INCREMENT=11;   （注意，这里的修改值要大于表的最大id）
+修改主键：ALTER TABLE `message`.`session_view` DROP PRIMARY KEY,
+ ADD PRIMARY KEY USING BTREE(`id`, `session_id`, `user_id`);
+添加主键：alter table trailer_comment add id bigint not null auto_increment comment 'pk id',ADD PRIMARY KEY USING BTREE(`id`);
+
+
+锁：
+加表写锁 lock table table1 write
+
+
+查看 触发器 函数 存储过程
+SHOW TRIGGERS\G  
+show function status; 
+show procedure status; 
+
+
+
+
+批量shell命令：
+for i in {98..107};do t=$(let j=$i ;echo $j | awk '{printf("%c", $1)}');let w=$i-97;echo $t $w;done
+
+for i in 109 111 113 117 119;do ssh photo$i.db "/etc/init.d/mysql start";sleep 10;done; 
+for i in {101..120};do mysql -hphoto$i.db -e"show processlist";sleep 2;done;
+for i in {101..120};do ssh photo$i.db "cat /etc/my.cnf";sleep 1;done;
+for i in {101..120};do ssh photo$i.db "swapoff -a;swapon -a;"& </dev/null;done;（好）
+for i in {101..110};do echo feed$i; ssh feed$i.db "ls /data"; echo " ";sleep 1;done;（好）
+针对散库散表（for i in {1..20};do let j=$i+130 ;for k in {0..4};do let m=($i-1)*5;let n=$m+$k;
+mysql --user=admin --password= --host=photo$j.db fb  -e "show create table photo_$n";sleep 1;done;done;）
+
+s散库散表建表：
+for i in {1..20};do let j=$i+130 ;for k in {0..4};do let m=($i-1)*5;let n=$m+$k;
+mysql --user=admin --password= --host=photo$j.db fb  -e "alter TABLE photo_to_save_$n modify id bigint(20) NOT NULL auto_increment";
+sleep 2;mysql --user=admin --password= --host=photo$j.db fb  -e "show create table photo_to_save_$n";sleep 1;done;done;
+只散表加字段
+for i in {0..99};do mysql -h 10.3.20.21 matter -e"alter table fans_to_ugc_$i add `matter_action` tinyint(3) NOT NULL default 0";
+sleep 1;mysql -h 10.3.20.21 matter -e "show create table fans_to_ugc_$i";done;
+
+
+
+
+
+复制：
+
+三套坐标：
+(Relay_Master_Log_File, Exec_Master_Log_Pos) 
+(Relay_Log_File, Relay_Log_Pos)
+(Master_Log_File,Read_Master_Log_Pos)
+
+
+不记入binlog 
+Logging can be suppressed with the optional NO_WRITE_TO_BINLOG keyword or its alias LOCAL.
+
+FLUSH LOGS  刷新所有log
+
+show master logs 显示binlog列表
+purge master logs to "fb-bi.000012"; 删掉由show master logs 显示的fb-bin.000012之前的binlog
+
+SHOW BINLOG EVENTS
+SHOW RELAYLOG EVENTS 
+
+SET sql_log_bin = {0|1}
+
+RESET MASTER
+RESET SLAVE [ALL]（运行这个命令，得先stop slave）
+
+START SLAVE [SQL_THREAD] UNTIL (在确定的坐标处启动，坐标等于binlog文件加位置)
+
+SET GLOBAL sql_slave_skip_counter = N (略过一个relay log 里的event)
+
+索引：
+operate_time < subdate(now(),interval 1 minute);  这种可以用到索引
+
+
+工作语法：
+
+（去掉报警，看是否有链接，无链接关mysql，删数据，重装，检查配置(server_id buffer_pool log_slave_updates)
+，起端口，做复制， (加ganglia nagios 改dns 修改sms管理系统)）建表 建索引 散表 加数据库源(源配置尽量全称DNS) 
+加jade源 加sequence 加权限
+拷数据时，查看目标盘空间是否够用
+
+换机器，记得改源
+
+堵时kill  kill.sh  dns  要删的状态 端口 （例子 kill.sh activity2.db sending data）
+
+改从库指向：
+change master to master_host='activity3.db.d.xiaonei.com',master_port=3306,master_user='rep',master_password='',
+master_log_file='fb-bin.000065',master_log_pos=96336109; 
+
+加从库权限
+GRANT RELOAD, SUPER, REPLICATION SLAVE ON *.* TO 'rep'@'10.3.19.166' IDENTIFIED BY  '';
+
+定时加索引：
+at 2:00 tomorrow
+mysql -h ugc10.db minisite  -e "alter table minisite_follower add index idx_time(time)"
+
+定时改表结构：
+at 2:00 tomorrow
+mysql -h wap15.db fb  -e "alter table poi_data_ugc add ugc_type_id int(10) default 4"
+
+散表加索引：
+for i in {96..97};do echo user_question_$i; mysql --user=admin --password= --host=admin5.db fb  
+-e "alter table user_question_$i add index idx_userid_updatetime (user_id,update_time)";sleep 10;
+mysql --user=admin --password= --host=admin5.db fb  -e "show create table user_question_$i";sleep 1;done;
+
+散表改结构：
+for i in {0..98};do echo wall_member_$i; mysql --user=admin --password= --host=ugc1.db wall  
+-e "ALTER table wall_member_$i ADD channel tinyint(11) default 0,add index idx_wall_id(wall_id)";sleep 2;
+mysql --user=admin --password= --host=ugc1.db wall  -e "show create table wall_member_$i";sleep 1;done;
+for i in {0..98};do mysql -h 10.8.17.202 carclub_log  -e "alter table user_car_$i add user_texture_id int(11) not null default 0";
+sleep 3;mysql -h ip carclub_log  -e "show create table user_car_$i";sleep 1;done;
+
+循环加权限：
+for i in statdb_bigt statdb_brand statdb_edm statdb_edm_monitor statmonitor statdb;do mysql --user=root --password= 
+--host=127.0.0.1 --port=3306 -e "use mysql;GRANT SELECT, INSERT, UPDATE, DELETE ON $i.* TO 'ad'@'10.7.17.147' IDENTIFIED BY '';
+show grants for 'ad'@'10.7.17.147'";sleep 2;done
