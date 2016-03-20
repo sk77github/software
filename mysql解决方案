@@ -1,0 +1,13 @@
+facebook：
+mysql5.6的多线程复制来解决write scale
+用半同步来解决data loss，
+用gtid、binlog server、mha来解决高可用问题
+
+
+
+Fabric
+
+
+Galera Cluster的实现方案有三种：Galera Cluster for MySQL、Percona XtraDB Cluster、MariaDB Galera Cluster。
+
+
