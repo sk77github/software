@@ -1,3 +1,14 @@
+手册阅读顺序：
+http://dev.mysql.com/doc/refman/5.6/en/replication-solutions-switch.html
+http://dev.mysql.com/doc/refman/5.6/en/replication-gtids.html
+http://dev.mysql.com/doc/refman/5.6/en/faqs-thread-pool.html
+http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
+http://dev.mysql.com/doc/refman/5.6/en/information-schema.html
+http://dev.mysql.com/doc/refman/5.6/en/performance-schema.html
+
+
+
+
 http://blog.sina.com.cn/s/blog_693f08470102vibt.html
 http://mysqlserverteam.com/whats-new-in-mysql-5-7-generally-available/
 
