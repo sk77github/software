@@ -1,3 +1,7 @@
+选型：
+用5.6的建议用>5.6.23，否则用小版本，升级挺麻烦的；
+
+---------------------------------------------------------------------------------------------------------
 MySQL误删除数据之后的恢复
 
 下午的时候开发人员直接在没有备份的情况下删除了一些重要的数据，幸亏我们有使用xtrabackup对数据库每天备份一次（我们的binlog_format是statement，如果是row的话，delete语句会在binlog中记录有之前的信息可以用来进行恢复，这也是row format的一个优点）。
@@ -53,6 +57,62 @@ delete  from acl_permission where name not in ('mtupm', 'mtsg', 'mtoa', 'mtgis',
 [localhost][admin]@(none)04:34:19>start slave until master_log_file='mysql-bin.004105',master_log_pos=526974047;
 五、恢复数据
 同步追上之后，就可以使用mysqldump将数据迁移到线上服务，整个恢复操作就结束了。
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+GTID:
+参数：gtid_mode,enforce_gtid_consistency,gtid_next,gtid_executed,gtid_purged
+
+在整个复制拓扑结构内，每个事务拥有自己全局唯一标识，,每个GTID对应一个事务;。
+GTID包含两个部分，一部分是实例的UUID，另一部分是实例内递增的整数，GTID = server_uuid:transaction_id。
+注：第一次启动mysql会生成server_uuid并存于数据目录的auto.cnf；
+
+流程
+1 主库执行事务，分配GTID并记入binlog；
+2 slave解析binlog，将GTID赋给gtid_next并于下一个事务使用此GTID，gtid_next位于session context；
+3 slave使用GTID前先做检查，确保其既没有被使用过(gtid_executed)， 也没有被其他session正在使用(gtid_owned)，
+多个客户端不可并发运行同一个事务；
+
+配置：
+5.6版本，gtid_mode=ON,binlog_file,log_slave_updates,enforce_gtid_consistency 均要开启
+
+MySQL 5.6 GTID，
+尽量使用purge master log来删除binlog。如果手工清理的话，记得把auto.cnf也清理掉。
+否则备库会发现uuid:1的我已经执行过了，不会继续执行，事务就会丢失了
+
+5.6GTID集群的配置需要停服，因为gtid_mode不能热更改，且集群内所有的gtid_mode都要设置为on
+Facebook,Booking.com,Percona都对此通过patch做了优化，做到了更优雅的升级
+
+5.6GTID开启后，会把slave crash safe 这个5.6开始支持的功能给fire掉。
+
+
+GTID空洞（或者说有间隙）：
+在 MySQL 5.6及以上版本中，我们强烈建议启用 MASTER_AUTO_POSITION = 1，让 MySQL 自己去做判断，减少一些不必要的问题，
+并且采用双主（其中一个主设为只读）的方式，方便两个主之间可以随意相互切换，而不必担心数据不一致。
+
+
+跳过复制错误：
+使用空事务的方法跳过sql thread 报错的GTID
+
+
+限制
+GTID依附于事务，
+1 更新非事务引擎
+非事务引擎单条DML被视为一个事务，倘若在一个事务中和innodb混合使用，可能导致单条事务生成多个GTID；
+2 create table … select
+若采用row-based，该sql常常被分解成两个独立事件：a 创建表；b 插入数据；
+事务可能会为这两个事件分配同一个GTID，导致slave把后面的insert忽略；
+3 临时表
+手工创建的临时表应该独立于任何事务之外(autocommit = 1)；
+4 不支持sql_slave_skip_counter
+slave若要跳过事务，需设置gtid_executed或gtid_next；
+5 mysql_upgrade
+其会更新系统表(MyISAM)，因此使用时须设置—gtid-mode=off，或者—write-binlog=off(5.6.7默认开启)；
+
+资源：
+http://www.tuicool.com/articles/NjqQju
+http://mysqllover.com/?p=594
+
 
 
 
