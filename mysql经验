@@ -78,7 +78,7 @@ GTID包含两个部分，一部分是实例的UUID，另一部分是实例内递
 多个客户端不可并发运行同一个事务；
 
 配置：
-5.6版本，gtid_mode=ON,binlog_file,log_slave_updates,enforce_gtid_consistency 均要开启
+5.6版本，gtid_mode=ON,--log-bin,log_slave_updates,enforce_gtid_consistency 均要开启
 
 MySQL 5.6 GTID，
 尽量使用purge master log来删除binlog。如果手工清理的话，记得把auto.cnf也清理掉。
