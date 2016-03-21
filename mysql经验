@@ -65,11 +65,28 @@ delete  from acl_permission where name not in ('mtupm', 'mtsg', 'mtoa', 'mtgis',
 --------------------------------------------------------------------------------------------------------------------------------
 
 GTID:
-参数：gtid_mode,enforce_gtid_consistency,gtid_next,gtid_executed,gtid_purged
 
 在整个复制拓扑结构内，每个事务拥有自己全局唯一标识，,每个GTID对应一个事务;。
 GTID包含两个部分，一部分是实例的UUID，另一部分是实例内递增的整数，GTID = server_uuid:transaction_id。
 注：第一次启动mysql会生成server_uuid并存于数据目录的auto.cnf；
+
+
+参数：
+gtid_mode,enforce_gtid_consistency
+
+gtid_next,gtid_executed,gtid_purged,gtid_owned
+
+GTID_EXECUTED：表示已经在该实例上执行过的事务； 执行RESET MASTER 会将该变量置空; 
+               们还可以通过设置GTID_NEXT执行一个空事务，来影响GTID_EXECUTED
+
+GTID_PURGED：已经被删除的binlog的事务，它是GTID_EXECUTED的子集
+
+GTID_OWNED:  表示正在执行的事务的gtid以及对应的线程ID。
+
+GTID_NEXT：  SESSION级别变量，表示下一个将被使用的GTID
+
+
+
 
 流程
 1 主库执行事务，分配GTID并记入binlog；
