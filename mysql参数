@@ -1,3 +1,32 @@
 常用参数如下，其他参数需要查阅文档：
 
+setup option:
+
+base：
+server-id，
+basedir
 datadir，该参数指定了数据库所在的路径。在Linux操作系统下默认datadir为/usr/local/mysql/data，
+port
+
+log：
+--log-bin 
+
+
+GTID:
+--gtid_mode=ON 
+--log-bin 
+--log-slave-updates 
+--enforce-gtid-consistency
+
+
+replication：
+--skip-slave-start
+
+
+innodb：
+
+
+
+
+system variable:
+read_only
