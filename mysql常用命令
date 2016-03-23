@@ -10,6 +10,12 @@ but it will you save time and trouble—if you encounter problems during the upg
 either by you or—if you have a MySQL Enterprise subscription—by MySQL support.
 
 -------------------------------------------------------------------------------------------------------------
+show命令：
+show binlog events（SHOW BINLOG EVENTS [IN 'log_name'] [FROM pos] [LIMIT [offset,] row_count]）
+show relaylog events
+
+show master status
+
 
 insert ignore into testtb(id,name,age)values(1,"aa",13); 
 replace into testtb(id,name,age)values(1,"aa",12); 
