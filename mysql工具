@@ -1,5 +1,13 @@
+mysqldump
+mysqlbinlog
+mysqladmin
+
+
+
+
 mysqlpump
 mk-slave-prefetch
+
 
 percona的工具集
 pt-duplicate-key-checker
