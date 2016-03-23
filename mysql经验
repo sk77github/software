@@ -94,9 +94,27 @@ GTID_NEXT：  SESSION级别变量，表示下一个将被使用的GTID
 3 slave使用GTID前先做检查，确保其既没有被使用过(gtid_executed)， 也没有被其他session正在使用(gtid_owned)，
 多个客户端不可并发运行同一个事务；
 
-配置：
+启动配置：
 5.6版本，gtid_mode=ON,--log-bin,log_slave_updates,enforce_gtid_consistency 均要开启
 
+搭建过程：
+1,
+SET @@global.read_only = ON; (both servers)
+2,
+allow the slave to catch up with the master.  make sure the slave has processed all updates before continuing.
+3,
+mysqladmin -uusername -p shutdown(both servers)
+4,
+配置setup option，--gtid_mode=ON --log-bin --log-slave-updates --enforce-gtid-consistency。并在从库上指定 --skip-slave-start。启动mysql
+5，
+CHANGE MASTER TO MASTER_HOST = host,MASTER_PORT = port,MASTER_USER = user,MASTER_PASSWORD = password,MASTER_AUTO_POSITION = 1;
+6，
+START SLAVE;
+7，
+SET @@global.read_only = OFF;（on master）
+
+
+注意事项：
 MySQL 5.6 GTID，
 尽量使用purge master log来删除binlog。如果手工清理的话，记得把auto.cnf也清理掉。
 否则备库会发现uuid:1的我已经执行过了，不会继续执行，事务就会丢失了
@@ -114,6 +132,11 @@ GTID空洞（或者说有间隙）：
 
 跳过复制错误：
 使用空事务的方法跳过sql thread 报错的GTID
+mysql> STOP SLAVE;
+mysql> SET SESSION GTID_NEXT = ‘7a07cd08-ac1b-11e2-9fcf-0010184e9e08:1131′;
+mysql> BEGIN; COMMIT;
+mysql> SET SESSION GTID_NEXT = AUTOMATIC;
+mysql> START SLAVE;
 
 
 限制
@@ -129,6 +152,10 @@ GTID依附于事务，
 slave若要跳过事务，需设置gtid_executed或gtid_next；
 5 mysql_upgrade
 其会更新系统表(MyISAM)，因此使用时须设置—gtid-mode=off，或者—write-binlog=off(5.6.7默认开启)；
+
+相关函数：
+GTID_SUBSET()
+GTID_SUBTRACT()
 
 资源：
 http://www.tuicool.com/articles/NjqQju
