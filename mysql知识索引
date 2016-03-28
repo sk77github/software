@@ -1,7 +1,19 @@
-事务
+事务，事务的隔离级别涉及锁，事务的实现方式MVCC与两阶段锁
 
-锁
+锁，innodb行锁，非锁定一致性读
 
+autocommit = 1，使每一个语句都成为一个事务。If a statement returns an error, the commit or rollback behavior depends on the error：
+http://dev.mysql.com/doc/refman/5.6/en/innodb-transaction-model.html
+autocommit = 0, commit或者rollback后，会自动又开启一个事务，就是说当前session始终有事务打开
+
+自动提交情况下，如果想用多条语句事务，可以使用 start transaction 或者 begin 结束时或者commit或者rollback。
+commit和rollback会释放当前session持有的所有锁
+
+事务隔离级别（要从当前事务和其他事务两个角度考虑，而且要有时序图与锁的想象，因为隔离级别通过锁实现）：
+READ UNCOMMITTED    未提交，当前session可读？其他session可读？
+READ COMMITTED      未提交不可读，只能读已提交
+REPEATABLE READ     可重复读
+SERIALIZABLE
 
 mysql index condition pushdow
 
