@@ -1,8 +1,4 @@
-session A                           session B
-select
-
-
-
+所谓innodb行锁，是针对有索引的语句，如果语句没有使用上索引，那么就会变成无索引退化，对于当前读就会变成表锁。
 
 
 快照读，当前读
@@ -10,11 +6,11 @@ select
 快照读：就是select
 select * from table ....;
 当前读：特殊的读操作，插入/更新/删除操作，属于当前读，处理的都是当前的数据，需要加锁。
-select * from table where ? lock in share mode;
-select * from table where ? for update;
+select * from table where ? lock in share mode;(sets an IS lock)
+select * from table where ? for update;(sets an IX lock)
 insert;
-update;
-delete;
+update ? where ?;
+delete ? where ?;
 事务的隔离级别实际上都是定义了当前读的级别
 
 对于当前读：
@@ -62,9 +58,8 @@ next key lock
 行锁防止别的事务修改或删除，GAP锁防止别的事务新增，行锁和GAP锁结合形成的的Next-Key锁共同解决了RR级别的幻读问题。
 
 共享锁  也叫S锁  也叫读锁
-
 排他锁  也叫X锁  也叫写锁
-意向锁
+意向锁  包括IS锁与IX锁
 
 
 
