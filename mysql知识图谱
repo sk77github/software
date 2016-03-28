@@ -36,15 +36,18 @@ autocommit = 0, commit或者rollback后，会自动又开启一个事务，就�
 自动提交情况下，如果想用多条语句事务，可以使用 start transaction 或者 begin 结束时或者commit或者rollback。
 commit和rollback会释放当前session持有的所有锁
 
+
+
 事务隔离级别（要从当前事务和其他事务两个角度考虑，而且要有时序图与锁的想象，因为隔离级别通过锁实现）：
-
-
 
 SERIALIZABLE        
 从MVCC并发控制退化为基于锁的并发控制。不区别快照读与当前读，所有的读操作均为当前读，读加读锁 (S锁)，写加写锁 (X锁)。读写互斥。
 READ UNCOMMITTED    未提交，当前session可读？其他session可读？
+脏读，不可重复读，幻读
 READ COMMITTED      未提交不可读，只能读已提交
-REPEATABLE READ     可重复读
+不可重复读，幻读
+REPEATABLE READ     
+可重复读，需要用next-key解决幻读
 
 
 
