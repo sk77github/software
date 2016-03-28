@@ -24,6 +24,7 @@ replication：
 
 
 innodb：
+--transaction-isolation
 
 
 
