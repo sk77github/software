@@ -1,4 +1,7 @@
 手册阅读顺序：
+http://dev.mysql.com/doc/refman/5.6/en/innodb-transaction-model.html
+
+
 http://dev.mysql.com/doc/refman/5.6/en/replication-solutions-switch.html
 http://dev.mysql.com/doc/refman/5.6/en/replication-gtids.html
 http://dev.mysql.com/doc/refman/5.6/en/faqs-thread-pool.html
