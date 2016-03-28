@@ -11,10 +11,23 @@ either by you or—if you have a MySQL Enterprise subscription—by MySQL suppor
 
 -------------------------------------------------------------------------------------------------------------
 show命令：
+show variables like
 show binlog events（SHOW BINLOG EVENTS [IN 'log_name'] [FROM pos] [LIMIT [offset,] row_count]）
 show relaylog events
 
 show master status
+
+---------------------------------------------------------------------------------------------------------------------
+set命令：
+SET transaction
+
+--------------------------------------------------------------------------------------------------------------
+
+事务：
+start transaction  或者 begin
+commit
+rollback
+
 
 
 insert ignore into testtb(id,name,age)values(1,"aa",13); 
