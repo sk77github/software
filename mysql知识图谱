@@ -51,13 +51,9 @@ delete ? where ?;
 事务的隔离级别实际上都是定义了当前读的级别
 
 --------------------------------------------------------------------------------------------------------------
-
-
-
+事务和锁
 
 所谓innodb行锁，是针对有索引的语句，如果语句没有使用上索引，那么就会变成无索引退化，对于当前读就会变成表锁。
-
-
 
 
 对于当前读：
@@ -67,12 +63,6 @@ delete ? where ?;
 不可重复读
 脏读
 
-
-
-
-
-
-事务，事务的隔离级别涉及锁，事务的实现方式MVCC与两阶段锁
 
 autocommit = 1，使每一个语句都成为一个事务。If a statement returns an error, the commit or rollback behavior depends on the error：
 http://dev.mysql.com/doc/refman/5.6/en/innodb-transaction-model.html
@@ -89,6 +79,8 @@ SERIALIZABLE        从MVCC退化为基于锁的并发控制。无快照读，�
 READ UNCOMMITTED    可读未提交，会脏读，不可重复读，会幻读
 READ COMMITTED      未提交不可读，只能读已提交。不会脏读，不可重复读，会幻读
 REPEATABLE READ     可重复读，需要用next-key解决幻读
+                    REPEATABLE READ, enables higher concurrency by allowing transactions to read rows that have exclusive locks,
+                    a technique known as consistent nonlocking read.
 
 
 
@@ -106,17 +98,49 @@ next key lock
 意向锁  包括IS锁与IX锁
 
 
+    	 X          IX	         S      	   IS
+X	  Conflict	Conflict	  Conflict	  Conflict
+IX	Conflict	Compatible	Conflict	  Compatible
+S	  Conflict	Conflict	  Compatible	Compatible
+IS	Conflict	Compatible	Compatible	Compatible
+
+
+-------------------------------------------------------------------------------------------------------
+加锁语句：
+因为事务一旦完成（commit或者rollback），事务所持有的锁就会释放。
+故在autocommit = 1 时，需要注意
+
+select * from table where ? lock in share mode;(sets an IS lock)
+select * from table where ? for update;(sets an IX lock)
+当autocommit 系统变量值为off 或者为0 时可直接使用不用手动的begin or start transaction开启事务，
+如果autocommit为1，需要begin或者start transaction 在使用上述两个语句加锁（因为如果为1，自动提交，事务就结束了，锁就释放了嘛）
+表的引擎需要支持事务，比如INNODB。
+
+
+
+加表锁：
+The correct way to use LOCK TABLES with transactional tables, such as InnoDB tables, is to begin a transaction 
+with SET autocommit = 0(not START TRANSACTION) followed by LOCK TABLES, and to not call UNLOCK TABLES until 
+you commit the transaction explicitly. 
+如下：
+SET autocommit=0;
+LOCK TABLES t1 WRITE, t2 READ, ...;
+... do something with tables t1 and t2 here ...
+COMMIT;
+UNLOCK TABLES;
+
+加表锁语句：
+LOCK TABLES ... WRITE 表写锁
+LOCK TABLES ... READ  表读锁
 
 
 
 
+-----------------------------------------------------------------------------------------------------
+相关参数
+innodb_lock_wait_timeout
 
-
-
-
-
-
-
+---------------------------------------------------------------------------------------------------------
 mysql index condition pushdow
 
 
