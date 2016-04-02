@@ -105,6 +105,13 @@ S	  Conflict	Conflict	  Compatible	Compatible
 IS	Conflict	Compatible	Compatible	Compatible
 
 
+死锁：
+innodb_print_all_deadlocks：
+When this option is enabled, information about all deadlocks in InnoDB user transactions is recorded in the mysqld error log.
+Otherwise, you see information about only the last deadlock, using the SHOW ENGINE INNODB STATUS command. 
+
+
+
 -------------------------------------------------------------------------------------------------------
 加锁语句：
 因为事务一旦完成（commit或者rollback），事务所持有的锁就会释放。
@@ -141,6 +148,17 @@ LOCK TABLES ... READ  表读锁
 innodb_lock_wait_timeout
 
 ---------------------------------------------------------------------------------------------------------
+
+物理文件相关：
+
+ibdata1                               系统表空间
+
+独立表空间                存有data and indexes      
+ib_logfile0，ib_logfile1  存有redo log
+
+
+--------------------------------------------------------------------------------------------------------------------
+
 mysql index condition pushdow
 
 
