@@ -9,8 +9,27 @@ basedir
 datadir，该参数指定了数据库所在的路径。在Linux操作系统下默认datadir为/usr/local/mysql/data，
 port
 
+
+connection：
+max_connections=
+
+
+buffer：
+sort_buffer_size=
+# Set key_buffer to 5 - 50% of your RAM depending on how much
+# you use MyISAM tables, but keep key_buffer_size + InnoDB
+# buffer pool size < 80% of your RAM
+key_buffer_size=
+
+
+
 log：
 --log-bin 
+
+
+
+transaction：
+--transaction-isolation
 
 
 GTID:
@@ -25,7 +44,28 @@ replication：
 
 
 innodb：
---transaction-isolation
+innodb_data_home_dir=        
+指定表空间文件ibdata目录。innodb不创建目录，需要自己先建好，注意mysql server有这个目录的相应权限
+对于其他需要自己指定的目录，如果log文件等。处理方式与以上相同。
+
+innodb_data_file_path=                      
+set up the InnoDB tablespace files ibdata
+
+# Set buffer pool size to 50-80% of your computer's memory
+innodb_buffer_pool_size=
+innodb_additional_mem_pool_size=
+
+# Set the log file size to about 25% of the buffer pool size
+innodb_log_group_home_dir
+innodb_log_file_size=
+innodb_log_buffer_size=
+
+innodb_flush_log_at_trx_commit=
+
+innodb_lock_wait_timeout
+
+
+
 
 
 
