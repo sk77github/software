@@ -1,4 +1,7 @@
 mysqldump
+--single-transaction
+--master-data
+
 mysqlbinlog
 mysqladmin
 
