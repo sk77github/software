@@ -170,13 +170,26 @@ Start the server with the --replicate-wild-ignore-table=mysql.% option to ignore
 
 
 
+-------------------------------------------------------------------------------------------------------------
+shard方案：
+
+存储过程（原理类似facebook的online ddl，以及xtrabackup）
+双写
 
 
+-------------------------------------------------------------------------------------------------------------
+online ddl
+一，5.6版本能支持的部分
+二，ddl工具，facebook的，percona的
+三，添加，删除索引，先在离线从库做，然后流量切换，再在另外一台机器做
 
 
-
-
-
+-------------------------------------------------------------------------------------------------------------------
+HA:
+中间件自己的HA怎么做？
+中间件如何改变DB访问方式：
+http://www.infoq.com/cn/presentations/mysql-high-availability-architecture-exploration-based-on-pxc/
+http://www.infoq.com/cn/presentations/distributed-database-and-anti-paradigm-design/
 
 
 
