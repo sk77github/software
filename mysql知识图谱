@@ -151,10 +151,40 @@ innodb_lock_wait_timeout
 
 物理文件相关：
 
-ibdata1                               系统表空间
+ibdata file                              
+系统表空间
 
-独立表空间                存有data and indexes      
+.ibd file
+表独立表空间
+.frm
+mysql层表定义文件
+
+     
 ib_logfile0，ib_logfile1  存有redo log
+
+
+system tablespace
+One or more data files (ibdata files) containing the metadata for InnoDB-related objects (the data dictionary), and the storage areas
+for one or more undo logs, the change buffer, and the doublewrite buffer. Depending on the setting of the innodb_file_per_table,
+when tables are created, it might also contain table and index data for some or all InnoDB tables. The data and metadata in the 
+system tablespace apply to all the databases in a MySQL instance.
+Prior to MySQL 5.6.7, the default was to keep all InnoDB tables and indexes inside the system tablespace, often causing this file 
+to become very large. Because the system tablespace never shrinks, storage problems could arise if large amounts of temporary data
+were loaded and then deleted. In MySQL 5.6.7 and higher, the default is file-per-table mode, where each table and its associated
+indexes are stored in a separate .ibd file. This new default makes it easier to use InnoDB features that rely on the Barracuda file 
+format, such as table compression, off-page storage for long variable-length column values, and large index key
+prefixes (innodb_large_prefix).
+Keeping all table data in the system tablespace or in separate .ibd files has implications for storage management in general. 
+The MySQL Enterprise Backup product might back up a small set of large files, or many smaller files. On systems with thousands of 
+tables, the file system operations to process thousands of .ibd files can cause bottlenecks.
+In MySQL 5.6 and higher, the innodb_undo_tablespaces option allows you to configure separate tablespace files for undo logs. 
+These files are still considered part of the system tablespace.
+
+
+
+data dictionary
+Metadata that keeps track of InnoDB-related objects such as tables, indexes, and table columns. This metadata is physically located 
+in the InnoDB system tablespace. For historical reasons, it overlaps to some degree with information stored in the .frm files.
 
 
 --------------------------------------------------------------------------------------------------------------------
