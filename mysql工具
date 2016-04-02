@@ -1,7 +1,17 @@
-mysqldump
---single-transaction
---master-data
+mysqldump：
 
+--single-transaction
+快照读，基于RR隔离级别显示开启事务然后select，dump的是开启事务也就是备份开始时的那个时间点的快照（使用mvcc，读undo log里的版本）
+dump时其他连接不可以使用这些命令： ALTER TABLE, CREATE TABLE, DROP TABLE, RENAME TABLE, TRUNCATE TABLE. 
+To dump large tables, combine the --single-transaction option with the --quick option.
+
+--master-data
+ It causes the dump output to include a CHANGE MASTER TO statement that indicates the binary log coordinates (file name and position) 
+ of the dumped server. 
+
+
+
+--------------------------------------------------------------------------------------------------------------------------
 mysqlbinlog
 mysqladmin
 
