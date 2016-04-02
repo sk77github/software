@@ -1,0 +1,17 @@
+InnoDB is a transaction-safe (ACID compliant) storage engine for MySQL that has commit, rollback, and crash-recovery capabilities to
+protect user data. However, it cannot do so if the underlying operating system or hardware does not work as advertised. Many operating 
+systems or disk subsystems may delay or reorder write operations to improve performance. On some operating systems, the very fsync() 
+system call that should wait until all unwritten data for a file has been flushed might actually return before the data has been flushed
+to stable storage. Because of this, an operating system crash or a power outage may destroy recently committed data, or in the worst case,
+even corrupt the database because of write operations having been reordered. If data integrity is important to you, perform some
+“pull-the-plug” tests before using anything in production. On OS X 10.3 and higher, InnoDB uses a special fcntl() file flush method. 
+Under Linux, it is advisable to disable the write-back cache.
+
+On ATA/SATA disk drives, a command such hdparm -W0 /dev/hda may work to disable the write-back cache. Beware that some drives or disk 
+controllers may be unable to disable the write-back cache.
+
+With regard to InnoDB recovery capabilities that protect user data, InnoDB uses a file flush technique involving a structure called the
+doublewrite buffer, which is enabled by default (innodb_doublewrite=ON). The doublewrite buffer adds safety to recovery following a crash
+or power outage, and improves performance on most varieties of Unix by reducing the need for fsync() operations. It is recommended that 
+the innodb_doublewrite option remains enabled if you are concerned with data integrity or possible failures. For additional information 
+about the doublewrite buffer,
