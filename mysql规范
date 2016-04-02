@@ -19,6 +19,7 @@ mysqld活着，3306端口可用
 监控TPS
 监控IOPS
 控制recovery还原时间
+mysql连接数
 
 
 流程化：
