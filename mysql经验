@@ -173,7 +173,17 @@ Start the server with the --replicate-wild-ignore-table=mysql.% option to ignore
 -------------------------------------------------------------------------------------------------------------
 shard方案：
 
-存储过程（原理类似facebook的online ddl，以及xtrabackup）
+只需要记录读走后的新更改即可（可使用存储过程，触发器等内部辅助工具）（原理类似facebook的online ddl，以及xtrabackup）
+xtrabackup原理：
+因为备份时 FTWRL（FLUSH TABLES WITH READ LOCK） 后，数据库是处于只读的，非 InnoDB 数据是在持有全局读锁情况下拷贝的，
+所以非 InnoDB 数据本身就对应 FTWRL 时间点；InnoDB 的 ibd 文件拷贝是在 FTWRL 前做的，拷贝出来的不同 ibd 文件最后更新时间点是不一样的，
+这种状态的 ibd 文件是不能直接用的，但是 redo log 是从备份开始一直持续拷贝的，最后的 redo 日志点是在持有 FTWRL 后取得的，
+所以最终通过 redo 应用后的 ibd 数据时间点也是和 FTWRL 一致的。
+
+xtrabackup原理三个关键点，FTWRL，redo log，ibd文件拷贝。那么在做逻辑sharding时，select数据（对应xtrabackup的ibd文件拷贝）前就要记录
+新的更改（对应xtrabackup里的redo log，可用触发器实现），select数据完成后，加读锁（对应xtrabackup的FTWRL），这时没有了新的更改，
+所有select时的更改都已取得，释放读锁，将取得的所有更改应用于select出的数据。这样，一致的sharding数据就取得了。
+
 双写
 
 
