@@ -198,6 +198,11 @@ in the InnoDB system tablespace. For historical reasons, it overlaps to some deg
 
 --------------------------------------------------------------------------------------------------------------------
 代码细节：
+
+崩溃恢复，undo，redo，checkpoint，lsn，xa，binlog，dirty page，flush，buffer pool，double write buffer，change buffer
+
+http://dev.mysql.com/doc/refman/5.6/en/innodb-recovery.html
+
 进入XA Recover阶段，MySQL使用内部XA，即通过Binlog和InnoDB做XA恢复。在初始化完成引擎后，Server层会开始扫描最后一个Binlog文件，
 搜集其中记录的XID（MYSQL_BIN_LOG::recover），然后和InnoDB层的事务XID做对比。如果XID已经存在于binlog中了，对应的事务需要提交；
 否则需要回滚事务。
