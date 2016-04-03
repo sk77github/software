@@ -22,6 +22,14 @@ set命令：
 SET transaction
 
 --------------------------------------------------------------------------------------------------------------
+flush:
+
+flush hosts
+flush binary logs
+flush privileges 
+FLUSH TABLES WITH READ LOCK(UNLOCK TABLES 配合使用） 
+
+------------------------------------------------------------------------------------------------------------------
 
 事务：
 start transaction  或者 begin
