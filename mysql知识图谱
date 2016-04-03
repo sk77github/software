@@ -199,7 +199,7 @@ in the InnoDB system tablespace. For historical reasons, it overlaps to some deg
 --------------------------------------------------------------------------------------------------------------------
 代码细节：
 
-崩溃恢复，undo，redo，checkpoint，lsn，xa，binlog，dirty page，flush，buffer pool，double write buffer，change buffer
+崩溃恢复，undo，redo，checkpoint，lsn，xa，binlog，dirty page，flush，buffer pool，double write buffer，change buffer,group commit
 
 http://dev.mysql.com/doc/refman/5.6/en/innodb-recovery.html
 
