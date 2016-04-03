@@ -180,9 +180,24 @@ xtrabackup原理：
 这种状态的 ibd 文件是不能直接用的，但是 redo log 是从备份开始一直持续拷贝的，最后的 redo 日志点是在持有 FTWRL 后取得的，
 所以最终通过 redo 应用后的 ibd 数据时间点也是和 FTWRL 一致的。
 
-xtrabackup原理三个关键点，FTWRL，redo log，ibd文件拷贝。那么在做逻辑sharding时，select数据（对应xtrabackup的ibd文件拷贝）前就要记录
-新的更改（对应xtrabackup里的redo log，可用触发器实现），select数据完成后，加读锁（对应xtrabackup的FTWRL），这时没有了新的更改，
-所有select时的更改都已取得，释放读锁，将取得的所有更改应用于select出的数据。这样，一致的sharding数据就取得了。
+xtrabackup原理三个关键点，FTWRL，redo log，ibd文件拷贝。那么在做逻辑sharding时，
+1,select数据（对应xtrabackup的ibd文件拷贝）前就要记录新的更改（对应xtrabackup里的redo log，可用触发器实现）
+2,select数据
+3,select数据完成后，加读锁（对应xtrabackup的FTWRL），这时没有了新的更改，所有select时的更改都已取得，
+4，释放读锁，将取得的所有更改应用于select出的数据(可用REPLACE INTO实现)。
+这样，和加读锁时间一致的sharding数据就取得了。
+
+
+整个sharding步骤：
+（根据线上负载，灵活运用，如果负载低，表t数据量小，直接使用导出方式，如果负载高，数据量大，就用分批select方式。必要时可以停服）
+假设sharding成3份，则需要5台服务器。其中a为线上主库，b为线上从库，c,d,e为sharding后的数据服务器，假设sharding表t
+1，在b服务器上建立表t10,t11,t12,并在表t上建立三个增删改触发器同步新更改数据到t10,t11,t12.
+2，在b上从表t 分批select数据并取模到表t0,t1,t2（如果用导出方式，可再新开一个实例，dump数据时使用--dump-slave）
+3，select数据完成后，关闭b从a的复制
+4，将t10,t11,t12中的新更改数据分别应用到t0,t1,t2
+5,开启b从a的复制，此时主库a服务器上的表t的新更改，通过复制到b服务器的表t，又通过b服务器上的触发器同步到b服务器上的表t0,t1,t2
+6,做c,d,e从b部分复制，c复制t0，d复制t1,e复制t2
+7,此时，主库a，与c,d,e已经同步，应用发布下代码，将数据库连接指向c,d,e即可
 
 双写
 
