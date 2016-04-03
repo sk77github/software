@@ -140,6 +140,7 @@ UNLOCK TABLES;
 LOCK TABLES ... WRITE 表写锁
 LOCK TABLES ... READ  表读锁
 
+FLUSH TABLES WITH READ LOCK(UNLOCK TABLES 配合使用）
 
 
 
@@ -148,6 +149,14 @@ LOCK TABLES ... READ  表读锁
 innodb_lock_wait_timeout
 
 ---------------------------------------------------------------------------------------------------------
+逻辑概念：
+
+undo log   保证事务的原子性（就是说得有一个地方记录回滚的数据），以及用来实现MVCC（因为记录了可以用来回滚的数据，所有数据的历史版本）
+
+redo log   保证事务的持久性（日志先行）
+
+
+
 
 物理文件相关：
 
@@ -188,6 +197,57 @@ in the InnoDB system tablespace. For historical reasons, it overlaps to some deg
 
 
 --------------------------------------------------------------------------------------------------------------------
+代码细节：
+进入XA Recover阶段，MySQL使用内部XA，即通过Binlog和InnoDB做XA恢复。在初始化完成引擎后，Server层会开始扫描最后一个Binlog文件，
+搜集其中记录的XID（MYSQL_BIN_LOG::recover），然后和InnoDB层的事务XID做对比。如果XID已经存在于binlog中了，对应的事务需要提交；
+否则需要回滚事务。
+Tips：为何只需要扫描最后一个binlog文件就可以了？ 因为在每次rotate到一个新的binlog文件之前，总是要保证前一个binlog文件中对应的事务
+都提交并且sync redo到磁盘了，也就是说，前一个binlog文件中的事务在崩溃恢复时肯定是出于提交状态的。
+
+
+有几种场景可能会触发redo log写文件：
+
+Redo log buffer空间不足时
+事务提交
+后台线程
+做checkpoint
+实例shutdown时
+binlog切换时
+我们所熟悉的参数innodb_flush_log_at_trx_commit 作用于事务提交时，这也是最常见的场景：
+当设置该值为1时，每次事务提交都要做一次fsync，这是最安全的配置，即使宕机也不会丢失事务；
+
+
+由于各个事务可以交叉的将事务日志拷贝到log buffer中，因而一次事务提交触发的写redo到文件，可能隐式的帮别的线程“顺便”也写了redo log，
+从而达到group commit的效果。
+
+当正常shutdown实例时，会将所有的脏页都刷到磁盘，并做一次完全同步的checkpoint；同时将最后的lsn写到系统表ibdata的第一个page
+中（函数fil_write_flushed_lsn）。在重启时，可以根据该lsn来判断这是不是一次正常的shutdown，如果不是就需要去做崩溃恢复逻辑。
+
+在初始化回滚段的时候，我们通过读入回滚段页并进行redo log apply，就可以将回滚段信息恢复到一致的状态，从而能够 “复活”在系统崩溃时
+活跃的事务，维护到读写事务链表中。对于处于prepare状态的事务，我们后续需要做额外处理。
+
+当实例从崩溃中恢复时，需要将活跃的事务从undo中提取出来，对于ACTIVE状态的事务直接回滚，对于Prepare状态的事务，如果该事务对应的
+binlog已经记录，则提交，否则回滚事务。
+
+http://www.cnblogs.com/chenpingzhao/p/5003881.html
+
+
+
+
+很显然，如果我们弱化配置的持久性(innodb_flush_log_at_trx_commit != 1 或者 sync_binlog != 1)， 宕机可能导致两种丢数据的场景：
+
+引擎层提交了，但binlog没写入，备库丢事务；
+引擎层没有prepare，但binlog写入了，主库丢事务。
+即使我们将参数设置成innodb_flush_log_at_trx_commit =1 和 sync_binlog = 1，也还会面临这样一种情况：主库crash时还有binlog没传递到备库，如果我们直接提升备库为主库，同样会导致主备不一致，老主库必须根据新主库重做，才能恢复到一致的状态。针对这种场景，我们可以通过开启semisync的方式来解决，一种可行的方案描述如下：
+
+设置双1强持久化配置;
+我们将semisync的超时时间设到极大值，同时使用semisync AFTER_SYNC模式，即用户线程在写入binlog后，引擎层提交前等待备库ACK；
+基于步骤1的配置，我们可以保证在主库crash时，所有老主库比备库多出来的事务都处于prepare状态；
+备库完全apply日志后，记下其执行到的relay log对应的位点，然后将备库提升为新主库；
+将老主库的最后一个binlog进行截断，截断的位点即为步骤3记录的位点;
+启动老主库，那些已经传递到备库的事务都会提交掉，未传递到备库的binlog都会回滚掉。
+
+-----------------------------------------------------------------------------------------------------------------------
 
 mysql index condition pushdow
 
