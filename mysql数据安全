@@ -1,3 +1,9 @@
+很显然，如果我们弱化配置的持久性(innodb_flush_log_at_trx_commit != 1 或者 sync_binlog != 1)， 宕机可能导致两种丢数据的场景：
+
+引擎层提交了，但binlog没写入，备库丢事务；
+引擎层没有prepare，但binlog写入了，主库丢事务。
+
+
 InnoDB is a transaction-safe (ACID compliant) storage engine for MySQL that has commit, rollback, and crash-recovery capabilities to
 protect user data. However, it cannot do so if the underlying operating system or hardware does not work as advertised. Many operating 
 systems or disk subsystems may delay or reorder write operations to improve performance. On some operating systems, the very fsync() 
