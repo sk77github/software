@@ -1,4 +1,26 @@
 手册阅读顺序：
+
+troubleshooting:
+http://dev.mysql.com/doc/refman/5.6/en/replication-problems.html
+http://dev.mysql.com/doc/refman/5.6/en/crashing.html
+http://dev.mysql.com/doc/refman/5.6/en/problems-connecting.html
+http://dev.mysql.com/doc/refman/5.6/en/starting-server-troubleshooting.html
+http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.html
+http://dev.mysql.com/doc/refman/5.6/en/innodb-monitors.html
+
+innodb:
+http://dev.mysql.com/doc/refman/5.6/en/innodb-and-mysql-replication.html
+http://dev.mysql.com/doc/refman/5.6/en/innodb-backup.html
+http://dev.mysql.com/doc/refman/5.6/en/innodb-recovery.html
+http://dev.mysql.com/doc/refman/5.6/en/innodb-tablespace.html
+http://dev.mysql.com/doc/refman/5.6/en/innodb-file-space.html
+
+最佳实践
+http://www.infoq.com/cn/presentations/distributed-database-and-anti-paradigm-design/
+http://www.infoq.com/cn/presentations/public-comments-monitoring-platform-analyse/
+
+http://dev.mysql.com/doc/refman/5.6/en/innodb-create-index-examples.html
+
 http://dev.mysql.com/doc/refman/5.6/en/innodb-transaction-model.html
 
 
