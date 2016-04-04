@@ -201,6 +201,26 @@ in the InnoDB system tablespace. For historical reasons, it overlaps to some deg
 
 崩溃恢复，undo，redo，checkpoint，lsn，xa，binlog，dirty page，flush，buffer pool，double write buffer，change buffer,group commit
 
+
+
+Checkpoint（检查点）技术的目的是解决以下几个问题：
+❑缩短数据库的恢复时间；崩溃恢复时不必重做所有redo log，只重做从checkpoint开始处的即可。
+❑缓冲池不够用时，将脏页刷新到磁盘；老的redo log就可以删除了，checkpoint前移。
+❑重做日志不可用时，刷新脏页。老的redo log就可以删除了，因为是环形写入，就又可以继续写了。
+
+
+LSN：
+每个页有LSN，重做日志中也有LSN，Checkpoint也有LSN。
+mysql>SHOW ENGINE INNODB STATUS\G;
+---
+LOG
+---
+Log sequence number 92561351052
+Log flushed up to 92561351052
+Last checkpoint at 92561351052
+
+
+
 http://dev.mysql.com/doc/refman/5.6/en/innodb-recovery.html
 
 进入XA Recover阶段，MySQL使用内部XA，即通过Binlog和InnoDB做XA恢复。在初始化完成引擎后，Server层会开始扫描最后一个Binlog文件，
@@ -253,6 +273,11 @@ http://www.cnblogs.com/chenpingzhao/p/5003881.html
 启动老主库，那些已经传递到备库的事务都会提交掉，未传递到备库的binlog都会回滚掉。
 
 -----------------------------------------------------------------------------------------------------------------------
+落盘操作：
+事务提交，redo log持久化到磁盘
+发生checkpoint，刷脏页到磁盘
+
+
 
 mysql index condition pushdow
 
