@@ -37,7 +37,7 @@ select * from table where ? for update;(sets an IX lock)
 rc事务隔离级别下，对于快照数据，非一致性读总是读取被锁定行的最新一份快照数据.（因为read commited嘛，但不可重复读）
 RR事务隔离级别下，对于快照数据，非一致性读总是读取事务开始时的行数据版本。
 
-快照读只适用于SELECT语句，不适用与DML语句，所以事务中的DML语句（当前读）是可以看到其他session中的事务的更新的，即时SELECT并不能看到这些
+注意：快照读只适用于SELECT语句，不适用与DML语句（DML语句是当前读），所以事务中的DML语句（当前读）是可以看到其他session中的事务的更新的，即时SELECT并不能看到这些
 
 
 快照读：就是select
