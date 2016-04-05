@@ -199,6 +199,85 @@ xtrabackup原理三个关键点，FTWRL，redo log，ibd文件拷贝。那么在
 6,做c,d,e从b部分复制，c复制t0，d复制t1,e复制t2
 7,此时，主库a，与c,d,e已经同步，应用发布下代码，将数据库连接指向c,d,e即可
 
+sharding触发器：
+    DELIMITER $ 
+     
+    USE `test`$ 
+     
+    DROP TRIGGER /*!50032 IF EXISTS */ `t_insert`$ 
+     
+    CREATE 
+        /*!50017 DEFINER = 'admin'@'%' */ 
+        TRIGGER `t_insert` AFTER INSERT ON `t`  
+        FOR EACH ROW BEGIN 
+        DECLARE v_result INT; 
+        SET v_result=MOD(new.id,3); 
+        IF v_result = 0 THEN 
+          INSERT INTO t0(id,NAME,age,address) VALUES(new.id,new.name,new.age,new.address); 
+        ELSEIF v_result = 1 THEN 
+          INSERT INTO t1(id,NAME,age,address) VALUES(new.id,new.name,new.age,new.address); 
+        ELSE 
+          INSERT INTO t2(id,NAME,age,address) VALUES(new.id,new.name,new.age,new.address); 
+        END IF; 
+        END; 
+    $ 
+     
+    DELIMITER ; 
+     
+     
+    /*============================================*/ 
+     
+    DELIMITER $ 
+     
+    USE `test`$ 
+     
+    DROP TRIGGER /*!50032 IF EXISTS */ `t_update`$ 
+     
+    CREATE 
+        /*!50017 DEFINER = 'admin'@'%' */ 
+        TRIGGER `t_update` AFTER UPDATE ON `t`  
+        FOR EACH ROW BEGIN 
+        DECLARE v_result INT; 
+        SET v_result=MOD(new.id,3); 
+        IF v_result = 0 THEN 
+          REPLACE INTO t0(id,NAME,age,address) VALUES(new.id,new.name,new.age,new.address); 
+        ELSEIF v_result = 1 THEN 
+          REPLACE INTO t1(id,NAME,age,address) VALUES(new.id,new.name,new.age,new.address); 
+        ELSE 
+          REPLACE INTO t2(id,NAME,age,address) VALUES(new.id,new.name,new.age,new.address); 
+        END IF; 
+        END; 
+    $ 
+     
+    DELIMITER ; 
+     
+     
+    /*============================================*/ 
+     
+    DELIMITER $ 
+     
+    USE `test`$ 
+     
+    DROP TRIGGER /*!50032 IF EXISTS */ `t_delete`$ 
+     
+    CREATE 
+        /*!50017 DEFINER = 'admin'@'%' */ 
+        TRIGGER `t_delete` AFTER DELETE ON `t`  
+        FOR EACH ROW BEGIN 
+        DECLARE v_result INT; 
+        SET v_result=MOD(old.id,3); 
+        IF v_result = 0 THEN 
+          DELETE FROM t0 WHERE id = OLD.id; 
+        ELSEIF v_result = 1 THEN 
+          DELETE FROM t1 WHERE id = OLD.id; 
+        ELSE 
+          DELETE FROM t2 WHERE id = OLD.id; 
+        END IF; 
+        END; 
+    $ 
+     
+    DELIMITER ; 
+
 双写
 
 
