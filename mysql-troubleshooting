@@ -1,3 +1,95 @@
+信息，逻辑，趋势变化，是解决问题的基石。
+
+从
+error log
+show processlist
+show engine innodb status
+information-schema表
+performance-schema表
+获取信息。
+
+熟悉数据库的原理，innodb内部工作机制，事务与锁，复制机制，这样就会有充足的逻辑树
+
+有监控，监控机器的cpu，负载，io，内存，网卡，磁盘。监控服务的存活性，比如端口。监控进程
+监控sql，监控mysql的内部metric（来自show processlist，show engine innodb status，information-schema表，performance-schema表等）
+画出趋势图形，这样能够明显的看出，趋势变化的那个拐点，确定问题的时间范围，相关原因，相关影响因素
+
+-----------------------------------------------------------------------------------------------------------------------
+
+环境的规范统一，与想当然，及真实环境：
+在搭建生产环境时，需要有个统一的规范，按照规范做，环境就是确定的，信息就会掌握确定。但真实环境什么都可能发生（因为某些疏漏）
+基于以上两点，就会产生想当然，以为应该是那样的环境（配置等），解决问题出发点就会走错。
+
+获取信息的手段：
+error log
+
+show processlist
+show engine innodb status
+
+show master status
+show slave status
+
+权限表
+information-schema表
+performance-schema表
+
+检查网络，确定可以ping通，确定host可以解析到ip，确认使用了正确的端口，且端口服务可用
+
+
+获取逻辑的手册资源：
+http://dev.mysql.com/doc/refman/5.6/en/replication-features.html
+
+获取bug list 资源：
+https://bugs.mysql.com/
+
+
+影响数据库运行的参数：
+--log-bin
+--server-id
+--skip-slave-start
+--skip-networking
+
+-------------------------------------------------------------------------------------------------------
+排错步骤：
 1,look at the MySQL server error log
 2,查阅报错信息表：http://dev.mysql.com/doc/refman/5.6/en/error-messages-server.html
 3，start the MySQL server from a command prompt so that you see what is happening.
+
+
+
+---------------------------------------------------------------------------------------------------------
+经典场景：
+
+复制：
+If the slave was running previously but has stopped,
+the reason usually is that some statement that succeeded on the master failed on the slave.
+做复制时出现了错误，做完的从库和主库数据不一致
+This should never happen if you have taken a proper snapshot of the master, 
+有程序在从库上做了写操作是大多数情况的原因
+and never modified the data on the slave outside of the slave thread.
+触发复制原理上的限制
+If the slave stops unexpectedly, it is a bug or you have encountered one of the known replication limitations described in 
+Section 17.4.1, “Replication Features and Issues”.（http://dev.mysql.com/doc/refman/5.6/en/replication-bugs.html）
+
+If a statement that succeeded on the master refuses to run on the slave, try the following procedure 
+重做从库，如果时间上不允许重做复制：
+看看是什么原因导致主从数据不一致
+Determine whether the affected table on the slave is different from the master table. Try to understand how this happened.
+Then make the slave's table identical to the master's and run START SLAVE.
+
+手动修复
+the preceding step does not work or does not apply, try to understand whether it would be safe to make the update manually (if needed)
+and then ignore the next statement from the master.
+
+跳过错误
+mysql> SET GLOBAL sql_slave_skip_counter = N;
+mysql> START SLAVE;
+The value of N should be 1 if the next statement from the master does not use AUTO_INCREMENT or LAST_INSERT_ID(). 
+Otherwise, the value should be 2. The reason for using a value of 2 for statements that use AUTO_INCREMENT or LAST_INSERT_ID() is 
+that they take two events in the binary log of the master.
+
+关于set global sql_slave_skip_counter=N 命令的一些点
+1、set global sql_slave_skip_counter=N中的N是指跳过N个event
+2、最好记的是N被设置为1时，效果跳过下一个事务。
+3、跳过第N个event后，位置若刚好落在一个事务内部，则会跳过这整个事务
+4、一个insert/update/delete不一定只对应一个event，由引擎和日志格式决定
