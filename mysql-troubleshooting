@@ -67,6 +67,11 @@ https://bugs.mysql.com/
 ---------------------------------------------------------------------------------------------------------
 经典场景：
 
+查询：
+rows:matched:n changed:n warnings: 分别为匹配的行数，被修改的行数，警告的数目和消息。show warnings获取详细警告信息。
+使用函数mysql_sqlstate()返回sql执行状态，mysql_erron()最近一次错误码,mysql_error()最近一次错误信息。
+perror工具 可以打印出错误码的详细错误消息。比如：perror 2
+
 复制：
 If the slave was running previously but has stopped,
 the reason usually is that some statement that succeeded on the master failed on the slave.
