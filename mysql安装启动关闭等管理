@@ -1,5 +1,4 @@
-install 
-
+安装：
 wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.10-linux-glibc2.5-x86_64.tar.gz
 shell> groupadd mysql
 shell> useradd -r -g mysql -s /bin/false mysql
@@ -24,3 +23,9 @@ shell> chown -R mysql data mysql-files
 bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
 bin/mysql -u root -p --port=3307 -h localhost  （服务启动后，使用当前安装版本的mysql客户端登录）
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
+
+
+启动：
+bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
+关闭：
+mysqladmin shutdown
