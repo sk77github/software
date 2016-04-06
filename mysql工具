@@ -13,6 +13,7 @@ To dump large tables, combine the --single-transaction option with the --quick o
 
 --------------------------------------------------------------------------------------------------------------------------
 mysqlbinlog
+
 mysqladmin
 
 
@@ -36,3 +37,6 @@ inception
 
 复制拓扑可视化
 https://github.com/outbrain/orchestrator
+
+异构数据同步：
+https://github.com/siddontang/go-mysql
