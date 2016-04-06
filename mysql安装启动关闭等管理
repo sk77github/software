@@ -25,6 +25,9 @@ bin/mysql -u root -p --port=3307 -h localhost  （服务启动后，使用当前
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
 
 
+升级：
+http://dev.mysql.com/doc/refman/5.6/en/mysql-upgrade.html
+
 启动：
 bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
 关闭：
