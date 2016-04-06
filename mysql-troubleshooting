@@ -22,9 +22,13 @@ performance-schema表
 
 获取信息的手段：
 error log
+general query log（可动态打开）you can find the last queries in the log file just before something happen。
+binlog
 
 show processlist
 show engine innodb status
+mysqladmin -u root processlist（特殊情况下 当mysql客户端不能登录 执行不了show processlist时，可以试试这个）
+mysqladmin -i 5 status or mysqladmin -i 5 -r status in a separate window to produce statistics while running other queries.
 
 show master status
 show slave status
@@ -48,12 +52,15 @@ https://bugs.mysql.com/
 --server-id
 --skip-slave-start
 --skip-networking
+--skip-name-resolve 
+--skip-host-cache
+--skip-grant-tables 
 
 -------------------------------------------------------------------------------------------------------
 排错步骤：
 1,look at the MySQL server error log
 2,查阅报错信息表：http://dev.mysql.com/doc/refman/5.6/en/error-messages-server.html
-3，start the MySQL server from a command prompt so that you see what is happening.
+3，start the MySQL server from a command prompt so that you see what is happening.（用mysql客户端查看或者复现）
 
 
 
@@ -93,3 +100,26 @@ that they take two events in the binary log of the master.
 2、最好记的是N被设置为1时，效果跳过下一个事务。
 3、跳过第N个event后，位置若刚好落在一个事务内部，则会跳过这整个事务
 4、一个insert/update/delete不一定只对应一个event，由引擎和日志格式决定
+
+
+
+
+
+连接：
+确定网络无问题。
+确定mysql已经起来。
+确定mysql配置的监听ip（--bind-address），端口。是否有skip-networking.
+使用netstat命令查看端口，确定连接使用的port还是socket
+确定权限表已启动，并且有相应的权限
+确认使用了正确的配置文件（禁止使用配置文件启动：mysqladmin --no-defaults -u root version）
+确认密码是否正确（重置root密码：http://dev.mysql.com/doc/refman/5.6/en/resetting-permissions.html）
+----------------------------------------------------------------------------------------------------------------------
+异常反查：
+
+shell> mysql
+ERROR 2003: Can't connect to MySQL server on 'host_name' (111)
+shell> mysql
+ERROR 2002: Can't connect to local MySQL server through socket
+'/tmp/mysql.sock' (111)
+可能是mysqld根本没起来
+
