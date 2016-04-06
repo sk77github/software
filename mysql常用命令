@@ -48,6 +48,8 @@ mysql授权：
 mysql> GRANT SELECT, INSERT , UPDATE , DELETE,CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES ON
 sxw.* TO 'sxwphper'@'localhost' IDENTIFIED BY '';     
 mysql> flush privileges;
+设置密码：
+SET PASSWORD FOR 'abe'@'host_name' = PASSWORD('eagle'); （或者update mysql库user表)
 
 查看mysql当前登录用户
 select user();
