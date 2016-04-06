@@ -1,9 +1,9 @@
 手册阅读顺序：
 
 troubleshooting:
-http://dev.mysql.com/doc/refman/5.6/en/replication-problems.html
-http://dev.mysql.com/doc/refman/5.6/en/crashing.html
-http://dev.mysql.com/doc/refman/5.6/en/problems-connecting.html
+
+
+
 http://dev.mysql.com/doc/refman/5.6/en/starting-server-troubleshooting.html
 http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.html
 http://dev.mysql.com/doc/refman/5.6/en/innodb-monitors.html
