@@ -8,6 +8,9 @@ http://dev.mysql.com/doc/refman/5.6/en/starting-server-troubleshooting.html
 http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting.html
 http://dev.mysql.com/doc/refman/5.6/en/innodb-monitors.html
 
+http://tech.meituan.com/innodb-lock.html?utm_source=tuicool&utm_medium=referral
+http://www.tuicool.com/articles/UriYBz
+
 innodb:
 http://dev.mysql.com/doc/refman/5.6/en/innodb-and-mysql-replication.html
 http://dev.mysql.com/doc/refman/5.6/en/innodb-backup.html
