@@ -11,4 +11,43 @@ show slave status;        查看Slave状态
 show binary logs;         查看二进制日志文件
 show engine innodb status\G    查看InnoDB存储引擎状态
 show engine myisam status\G    查看MyISAM存储引擎状态
-还有通过查看information_schema 这个数据库获取InnoDB存储引擎相关信息
+
+
+
+
+
+还有通过查看information_schema 这个数据库获取InnoDB存储引擎相关信息：
+https://mysqlstepbystep.com/2015/07/15/useful-queries-on-mysql-information_schema/
+
+1，Finding tables without Primary or Unique Keys:
+
+SELECT t.TABLE_SCHEMA,t.TABLE_NAME,ENGINE
+FROM information_schema.TABLES t
+INNER JOIN information_schema.COLUMNS c
+ON t.TABLE_SCHEMA=c.TABLE_SCHEMA
+AND t.TABLE_NAME=c.TABLE_NAME
+AND t.TABLE_SCHEMA NOT IN ('performance_schema','information_schema','mysql')
+GROUP BY t.TABLE_SCHEMA,t.TABLE_NAME
+HAVING sum(if(column_key in ('PRI','UNI'), 1,0))=0;
+
+2，Finding Foreign key constraints:
+
+SELECT referenced_table_name parent, table_name child, constraint_name
+FROM information_schema.KEY_COLUMN_USAGE
+WHERE referenced_table_name IS NOT NULL
+ORDER BY referenced_table_name;
+
+3，Finding Fragmentation:
+
+SELECT TABLE_NAME, (DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024 AS sizeMb,DATA_FREE / 1024 / 1024 AS data_free_MB
+FROM information_schema.tables
+WHERE engine LIKE 'InnoDB'
+and TABLE_SCHEMA = 'db_name'
+AND DATA_FREE > 100 * 1024 * 1024;
+
+4，Checking if there are any MyISAM tables or not:
+
+SELECT TABLE_SCHEMA, TABLE_NAME
+FROM `information_schema`.`TABLES`
+WHERE TABLE_SCHEMA NOT IN ('information_schema','performance_schema','mysql')
+AND ENGINE='MyISAM';
