@@ -11,3 +11,45 @@ Fabric
 Galera Cluster的实现方案有三种：Galera Cluster for MySQL、Percona XtraDB Cluster、MariaDB Galera Cluster。
 
 
+
+HA：
+1，replication
+主宕机，已有数据不丢失：
+通过redo log，xa 事务，gelera，
+
+2，moniter：
+主宕机，从无缝切换为主，新写数据不丢失
+首先，程序（或者某个组件）怎么第一时间知道主宕机了，如何做监控发现。（mha，keepalived（VIP）或者heartbeat，zookeeper）
+从如何保证与主有一致性的数据，主从不延时，且无数据丢失(同步复制，半同步复制）
+这样，相同的数据有了，也第一时间发现了主宕机，那么如何将应用写入切换到新主，也就是如何把从提升为主
+
+3，failover
+keepalived（上层应用与mysql复制集群的通信切换）
+mha（mysql集群内部复制拓扑的切换）
+gtid
+
+使用keepalived的目的就是在MHA检测到master挂掉的时候,调用shutdown_script关掉keepalived进程,从而使虚拟IP（VIP）移动到新的master上面去。
+
+参考资料：
+http://yoshinorimatsunobu.blogspot.jp/2014/04/semi-synchronous-replication-at-facebook.html
+
+市面现有方案：
+mha	
+keeplived       实现虚拟IP
+mmm　　	        主备通过VIP共享ip 
+heartbeat+ drbd	主备通过VIP共享ip 　　　　
+percona galera cluster
+
+ 
+
+
+
+
+
+中间件：
+vitess
+kingshard
+mixer
+
+
+
