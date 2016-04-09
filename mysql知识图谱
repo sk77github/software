@@ -229,6 +229,11 @@ http://dev.mysql.com/doc/refman/5.6/en/innodb-recovery.html
 Tips：为何只需要扫描最后一个binlog文件就可以了？ 因为在每次rotate到一个新的binlog文件之前，总是要保证前一个binlog文件中对应的事务
 都提交并且sync redo到磁盘了，也就是说，前一个binlog文件中的事务在崩溃恢复时肯定是出于提交状态的。
 
+在一个事务发出COMMIT动作之前，由于sync_binlog为1，因此会将二进制日志立即写入磁盘。如果这时已经写入了二进制日志，但是提交还没有发生，
+并且此时发生了宕机，那么在MySQL数据库下次启动时，由于COMMIT操作并没有发生，这个事务会被回滚掉。但是二进制日志已经记录了该事务信息，
+不能被回滚。这个问题可以通过将参数innodb_support_xa设为1来解决，虽然innodb_support_xa与XA事务有关，但它同时也确保了二进制日志和InnoDB
+存储引擎数据文件的同步。
+
 
 有几种场景可能会触发redo log写文件：
 
