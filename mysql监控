@@ -14,6 +14,11 @@ show engine myisam status\G    查看MyISAM存储引擎状态
 
 
 
+status：
+SHOW GLOBAL STATUS LIKE'innodb_dblwr%'\G;
+系统在高峰时的Innodb_dblwr_pages_written:Innodb_dblwr_writes远小于64∶1，那么可以说明系统写入压力并不是很高。
+
+
 
 
 还有通过查看information_schema 这个数据库获取InnoDB存储引擎相关信息：
