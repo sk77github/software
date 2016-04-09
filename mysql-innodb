@@ -21,14 +21,15 @@ repeating history during redo
 logging changes during undo
 
 
-InnoDB存储引擎将数据放在一个逻辑的表空间中
-ibd文件
+InnoDB存储引擎将数据和索引放在一个逻辑的表空间中，ibd文件
+
+
 
 
 mysql主要需要落盘的几个角色：
-binlog，redo log，undo log，record，index
+binlog（马上落盘），redo log（马上落盘），undo log，record（有double write），index（有change buffer）
 物理文件：
-binlog，ibd（存record，index），ibdata（元信息），frm（表定义文件），ib_logfile(redo log)
+binlog，ibd（存record（primary index），index（secondary index）），ibdata（double write），frm（表定义文件），ib_logfile(redo log)
 
 
 binlog
@@ -43,8 +44,23 @@ redo log buffer
 参数影响角色的刷盘行为：
 innodb_flush_log_at_trx_commit=1
 
+record（primary index)
+角色在内存中的映射：
+double write buffer
+在对缓冲池的脏页进行刷新时，并不直接写磁盘，而是会通过memcpy函数将脏页先复制到内存中的doublewrite buffer，之后
+通过doublewrite buffer再分两次，每次1MB顺序地写入共享表空间的物理磁盘上，然后马上调用fsync函数，同步磁盘，避免缓冲写带来的问题。
+完成doublewrite页的写入后，再将doublewrite buffer中的页写入各个表空间文件中，此时的写入是离散的。
+double write buffer要落盘，是顺序写。
+
+index（secondary index）
+角色在内存中的映射:
+概念是change buffer。内存实体在innodb buffer pool里
+
 无论用户将二进制日志文件记录的格式设为STATEMENT还是ROW，又或者是MIXED，其记录的都是关于一个事务的具体操作内容，即该日志是逻辑日志。
 而InnoDB存储引擎的重做日志文件记录的是关于每个页（Page）的更改的物理情况。
 二进制日志文件仅在事务提交前进行提交，即只写磁盘一次，不论这时该事务多大。而在事务进行的过程中，却不断有重做日志条目（redo entry）
 被写入到重做日志文件中(innodb master thread 每一秒刷盘一次，参数innodb_flush_log_at_trx_commit的有效值有0、1、2影响)
 
+
+
+几个角色的逻辑顺序是怎样的？
