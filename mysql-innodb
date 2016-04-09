@@ -23,3 +23,28 @@ logging changes during undo
 
 InnoDB存储引擎将数据放在一个逻辑的表空间中
 ibd文件
+
+
+mysql主要需要落盘的几个角色：
+binlog，redo log，undo log，record，index
+物理文件：
+binlog，ibd（存record，index），ibdata（元信息），frm（表定义文件），ib_logfile(redo log)
+
+
+binlog
+角色在内存中的映射：
+binlog_cache_size（针对每个session的变量，SHOW GLOBAL STATUS命令查看binlog_cache_use、binlog_cache_disk_use可观察使用状态）
+参数影响角色的刷盘行为：
+sync_binlog=1
+
+redo log
+角色在内存中的映射：
+redo log buffer 
+参数影响角色的刷盘行为：
+innodb_flush_log_at_trx_commit=1
+
+无论用户将二进制日志文件记录的格式设为STATEMENT还是ROW，又或者是MIXED，其记录的都是关于一个事务的具体操作内容，即该日志是逻辑日志。
+而InnoDB存储引擎的重做日志文件记录的是关于每个页（Page）的更改的物理情况。
+二进制日志文件仅在事务提交前进行提交，即只写磁盘一次，不论这时该事务多大。而在事务进行的过程中，却不断有重做日志条目（redo entry）
+被写入到重做日志文件中(innodb master thread 每一秒刷盘一次，参数innodb_flush_log_at_trx_commit的有效值有0、1、2影响)
+
