@@ -26,6 +26,14 @@ key_buffer_size=
 log：
 --log-bin
 sync_binlog = 1   尽可能不丢数据
+binlog_format
+log-slave-update
+max_binlog_size
+binlog_cache_size
+binlog-do-db
+binlog-ignore-db
+
+
 
 
 
