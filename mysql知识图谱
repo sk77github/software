@@ -223,6 +223,15 @@ Last checkpoint at 92561351052
 
 http://dev.mysql.com/doc/refman/5.6/en/innodb-recovery.html
 
+1. prepare ，然后将redo log持久化到磁盘
+2. 如果前面prepare成功，那么再继续将事务日志持久化到binlog
+3. 如果前面成功，那么在redo log里面写上一个commit记录
+那么假如在进行着三步时又任何一步失败，crash recovery是怎么进行的呢? 此时会先从redo log将最近一个检查点开始的事务读出来，
+然后参考binlog里面的事务进行恢复。如果是在1 crash，那么自然整个事务都回滚；如果是在2 crash，那么也会整个事务回滚；
+如果是在3 crash（仅仅是commit记录没写成功），那么没有关系因为2中已经记录了此次事务的binlog，所以将这个进行commit。
+所以总结起来就是redo log里凡是prepare成功，但commit失败的事务都会先去binlog查找判断其是否存在
+（通过XID进行判断，是不是经常在binlog里面看到Xid=xxxx？这就是xa事务id），如果有则将这个事务commit，否则rollback
+
 进入XA Recover阶段，MySQL使用内部XA，即通过Binlog和InnoDB做XA恢复。在初始化完成引擎后，Server层会开始扫描最后一个Binlog文件，
 搜集其中记录的XID（MYSQL_BIN_LOG::recover），然后和InnoDB层的事务XID做对比。如果XID已经存在于binlog中了，对应的事务需要提交；
 否则需要回滚事务。
@@ -233,6 +242,8 @@ Tips：为何只需要扫描最后一个binlog文件就可以了？ 因为在每
 并且此时发生了宕机，那么在MySQL数据库下次启动时，由于COMMIT操作并没有发生，这个事务会被回滚掉。但是二进制日志已经记录了该事务信息，
 不能被回滚。这个问题可以通过将参数innodb_support_xa设为1来解决，虽然innodb_support_xa与XA事务有关，但它同时也确保了二进制日志和InnoDB
 存储引擎数据文件的同步。
+
+
 
 
 有几种场景可能会触发redo log写文件：
