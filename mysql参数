@@ -74,6 +74,9 @@ innodb_flush_log_at_trx_commit=1   尽可能不丢数据
 innodb_lock_wait_timeout
 
 
+开关：
+innodb_fast_shutdown
+innodb_force_recovery
 
 
 
