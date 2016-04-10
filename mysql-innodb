@@ -48,6 +48,8 @@ buffer bool内存池包含的内存角色：
 secondary index页、record页，undo页，insert buffer，adaptive hash index，lock info，data dictionary
 buffer pool里关于secondary index只有change buffer吗？还是有其他数据结构
 
+以上这些对应关系表现在一条update语句上的逻辑先后顺序是什么？这个先后顺序过程中哪些参数进行了影响?画出图形
+
 
 binlog
 角色在内存中的映射：
