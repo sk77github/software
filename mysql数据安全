@@ -1,10 +1,17 @@
+sync_binlog = 1
+innodb_flush_log_at_trx_commit = 1 
+innodb_support_xa=1
+
+
 很显然，如果我们弱化配置的持久性(innodb_flush_log_at_trx_commit != 1 或者 sync_binlog != 1)， 宕机可能导致两种丢数据的场景：
 
 引擎层提交了，但binlog没写入，备库丢事务；
 引擎层没有prepare，但binlog写入了，主库丢事务。
 
 
-即使我们将参数设置成innodb_flush_log_at_trx_commit =1 和 sync_binlog = 1，也还会面临这样一种情况：主库crash时还有binlog没传递到备库，如果我们直接提升备库为主库，同样会导致主备不一致，老主库必须根据新主库重做，才能恢复到一致的状态。针对这种场景，我们可以通过开启semisync的方式来解决，一种可行的方案描述如下：
+即使我们将参数设置成innodb_flush_log_at_trx_commit =1 和 sync_binlog = 1，也还会面临这样一种情况：主库crash时还有binlog没传递到备库，
+如果我们直接提升备库为主库，同样会导致主备不一致，老主库必须根据新主库重做，才能恢复到一致的状态。针对这种场景，
+我们可以通过开启semisync的方式来解决，一种可行的方案描述如下：
 
 设置双1强持久化配置;
 我们将semisync的超时时间设到极大值，同时使用semisync AFTER_SYNC模式，即用户线程在写入binlog后，引擎层提交前等待备库ACK；
