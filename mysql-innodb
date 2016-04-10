@@ -50,6 +50,10 @@ buffer pool里关于secondary index只有change buffer吗？还是有其他数�
 
 以上这些对应关系表现在一条update语句上的逻辑先后顺序是什么？这个先后顺序过程中哪些参数进行了影响?这个过程中还涉及事务和锁。画出图形
 
+binlog与redo log数据一致性：
+innodb_support_xa         binlog与redo log最终持久化的事务要一致，且事务的执行顺序要一致，这样主从同步（设计问题，因为存储引擎是插件）
+用2pc实现（两阶段提交，two-phase commit in InnoDB (prepare, then commit)）
+
 
 binlog
 角色在内存中的映射：
