@@ -74,10 +74,13 @@ innodb_flush_log_at_trx_commit=1   尽可能不丢数据
 innodb_lock_wait_timeout
 
 
-开关：
+
+innodb启动与关闭：
 innodb_fast_shutdown
 innodb_force_recovery
 
+binlog与redo log数据一致性：
+innodb_support_xa         binlog与redo log最终持久化的事务要一致，且事务的执行顺序要一致，这样主从同步（设计问题，因为存储引擎是插件）
 
 
 
