@@ -282,8 +282,19 @@ http://www.cnblogs.com/chenpingzhao/p/5003881.html
 事务提交，redo log持久化到磁盘
 发生checkpoint，刷脏页到磁盘
 
+------------------------------------------------------------------------------------------------------------------
+页：
 
+mysql>SELECT TABLE_NAME,SPACE,PAGE_NUMBER,PAGE_TYPE->FROM INNODB_BUFFER_PAGE_LRU->WHERE OLDEST_MODIFICATION>0;
++------------+---+|TABLE_NAME|SPACE|PAGE_NUMBER|PAGE_TYPE|
+                  |NULL|0|56|SYSTEM|
+                  |NULL|0|0|FILE_SPACE_HEADER|
+                  |test/t|1|3|INDEX|
+                  |NULL|0|320|INODE|
+                  |NULL|0|325|UNDO_LOG|
+                  5 rows in set(0.00 sec) 
 
+------------------------------------------------------------------------------------------------------------------------------------
 mysql index condition pushdow
 
 
