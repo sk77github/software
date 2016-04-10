@@ -79,3 +79,17 @@ index（secondary index）
 而InnoDB存储引擎的重做日志文件记录的是关于每个页（Page）的更改的物理情况。
 二进制日志文件仅在事务提交前进行提交，即只写磁盘一次，不论这时该事务多大。而在事务进行的过程中，却不断有重做日志条目（redo entry）
 被写入到重做日志文件中(innodb master thread 每一秒刷盘一次，参数innodb_flush_log_at_trx_commit的有效值有0、1、2影响)
+
+
+
+
+触发redo log落盘：
+
+Redo log buffer空间不足时
+事务提交
+后台线程
+做checkpoint
+实例shutdown时
+binlog切换时
+我们所熟悉的参数innodb_flush_log_at_trx_commit 作用于事务提交时，这也是最常见的场景：
+当设置该值为1时，每次事务提交都要做一次fsync，这是最安全的配置，即使宕机也不会丢失事务；
