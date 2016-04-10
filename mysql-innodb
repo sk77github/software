@@ -22,6 +22,7 @@ logging changes during undo
 
 
 InnoDB存储引擎将数据和索引放在一个逻辑的表空间中，ibd文件
+buffer bool内存池包含的内存角色：自适应哈希索引、Lock信息、Insert Buffer等
 
 
 
