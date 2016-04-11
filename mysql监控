@@ -14,10 +14,18 @@ show engine myisam status\G    查看MyISAM存储引擎状态
 
 
 
-status：
+show global status：
 SHOW GLOBAL STATUS LIKE'innodb_dblwr%'\G;
 系统在高峰时的Innodb_dblwr_pages_written:Innodb_dblwr_writes远小于64∶1，那么可以说明系统写入压力并不是很高。
 
+
+show engine innodb status：
+
+Buffer pool hit rate，表示缓冲池的命中率，通常该值不应该小于95%。小于95%这种情况，需要观察是否由于全表扫描引起的LRU列表被污染的问题。
+
+Insert Buffer
+Inserts代表了插入的记录数；merged recs代表了合并的插入记录数量；merges代表合并的次数，也就是实际读取页的次数。
+merges:merged recs大约为1∶3，代表了插入缓冲将对于非聚集索引页的离散IO逻辑请求大约降低了2/3。
 
 
 
