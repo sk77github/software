@@ -14,6 +14,7 @@ To dump large tables, combine the --single-transaction option with the --quick o
 --------------------------------------------------------------------------------------------------------------------------
 mha:
 https://code.google.com/p/mysql-master-ha/wiki/TableOfContents?tm=6
+http://www.slideshare.net/matsunobu/automated-master-failover
 
 
 
