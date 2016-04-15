@@ -25,6 +25,28 @@ bin/mysql -u root -p --port=3307 -h localhost  （服务启动后，使用当前
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
 
 
+----------------------------------------------------------------------------------------------------------
+安装脚本：
+//cat install_mysql_5710.sh 
+groupadd mysql
+useradd -r -g mysql -s /bin/false mysql
+cd /usr/local
+tar zxvf /root/mysql-5.7.10-linux-glibc2.5-x86_64.tar.gz
+ln -s /usr/local/mysql-5.7.10-linux-glibc2.5-x86_64 mysql
+cd mysql
+mkdir mysql-files
+chmod 770 mysql-files
+chown -R mysql .
+chgrp -R mysql .
+bin/mysqld --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --initialize --user=mysql   # MySQL 5.7.6 and up
+bin/mysql_ssl_rsa_setup              # MySQL 5.7.6 and up
+chown -R root .
+chown -R mysql data mysql-files
+bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
+//end cat install_mysql_5710.sh 
+---------------------------------------------------------------------------------------------------------------------
+
+
 升级：
 http://dev.mysql.com/doc/refman/5.6/en/mysql-upgrade.html
 
