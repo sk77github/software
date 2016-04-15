@@ -44,6 +44,10 @@ chown -R root .
 chown -R mysql data mysql-files
 bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
 //end cat install_mysql_5710.sh 
+
+装好后：
+bin/mysql -u root -p  登入系统改密码 
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
 ---------------------------------------------------------------------------------------------------------------------
 
 
