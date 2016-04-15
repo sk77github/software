@@ -1,0 +1,27 @@
+
+角色：
+
+192.168.1.2            lvs backup
+192.168.1.4            lvs master
+192.168.1.8            atlas2
+192.168.1.10           atlas1
+192.168.1.11           mysql slave2
+192.168.1.12           mysql slave1
+192.168.1.13           mysql maser
+192.168.1.14           mha manger
+
+
+配置ssh无密码登录，192.168.1.14到所有机器，以便mha和ansible使用。
+
+1,安装perl mysql 
+yum install perl-DBD-MySQL -y
+
+2，安装mha
+mha4mysql-node-0.54-0.el6.noarch.rpm
+mha4mysql-manager-0.55-0.el6.noarch.rpm 
+需要的perl依赖：
+yum install perl-Time-HiRes.x86_64 perl-Parallel-ForkManager.noarch perl-Log-Dispatch-FileRotate.noarch perl-Log-Dispatch-Configurator-Any.noarch perl-Log-Dispatch-Array.noarch perl-Log-Dispatch.noarch perl-Log-Dispatch-Perl.noarch perl-Log-Dispatch-Config.noarch perl-Config-Tiny.noarch
+
+3，配置各mysql机器 ssh无密码登录
+
+4，搭建mysql复制拓扑
