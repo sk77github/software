@@ -106,6 +106,12 @@ allow the slave to catch up with the master.  make sure the slave has processed 
 mysqladmin -uusername -p shutdown(both servers)
 4,
 配置setup option，--gtid_mode=ON --log-bin --log-slave-updates --enforce-gtid-consistency。并在从库上指定 --skip-slave-start。启动mysql
+#GTID
+server-id=
+log-bin  
+log-slave-updates=ON
+gtid_mode=ON
+enforce-gtid-consistency=ON
 5，
 CHANGE MASTER TO MASTER_HOST = host,MASTER_PORT = port,MASTER_USER = user,MASTER_PASSWORD = password,MASTER_AUTO_POSITION = 1;
 6，
