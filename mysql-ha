@@ -1,6 +1,23 @@
 Semi-Synchronous Replication  +   GTID   + MHA  + LVS + Keeplived + 中间件（读写分离，水平分表，怎么搞分布式事务）
 
+-------------------------------------------------------------------------------------------------------------------------
+MHA:
+When you add/remove slaves, you should update the config file and had better restart MHA.
 
+to avoid split brain,Power off the dead master
+
+By default, masterha_manager runs in foreground. You can run the masterha_manager program in background as below.
+  manager_host$ nohup masterha_manager --conf=/etc/app1.cnf < /dev/null > /var/log/masterha/app1/app1.log 2>&1 &
+Set nohup, and make sure that masterha_manager does not read/write from/to STDIN, STDOUT and STDERR.
+
+If you create a file at /etc/masterha_default.cnf, MHA Manager scripts automatically reads the file as a global configuration file.
+
+Application-scope parameters should be written in [server default] block. In [serverN] blocks, you should set local-scope parameters.
+hostname is mandatory local-scope parameter so has to be written here. Block name should start from "server". 
+Internally server configurations are sorted by block name, and sorted order matters when MHA decides new master
+
+
+----------------------------------------------------------------------------------------------------------------------------------
 
 
 角色：
