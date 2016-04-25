@@ -9,6 +9,7 @@ secondary_check_script
 
 to avoid split brain：
 1，Power off the dead master
+参数：shutdown_script
 2，
 参数：secondary_check_script
 例子：secondary_check_script=masterha_secondary_check -s remote_host1 -s remote_host2
