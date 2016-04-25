@@ -3,16 +3,34 @@ binlog server（共享存储？）+ Semi-Synchronous Replication  +   GTID   + M
 
 -------------------------------------------------------------------------------------------------------------------------
 MHA:
-When you add/remove slaves, you should update the config file and had better restart MHA.
+When you add/remove slaves, you should update the config file and had better restart MHA.需要调整的项:
+secondary_check_script
 
-to avoid split brain,Power off the dead master
+
+to avoid split brain：
+1，Power off the dead master
+2，
+参数：secondary_check_script
+例子：secondary_check_script=masterha_secondary_check -s remote_host1 -s remote_host2
+https://github.com/matthewbogner/mysql-master-ha/issues/92
+by setting -s remote_host1. In that case MHA fails to connect to the remote host and 
+does not start failover. Failover does not start, but this is much better than split brain.
+tips： remote_host1 and remote_host2 should be located on different network segments from MHA Manager and MySQL servers.
+如何避免脑裂：
+当MHA Manager检测master失败后，不会立即判断该master已宕机（需要多个网络路由验证），而是通过ssh到secondary_check_script定义的主机再次
+进行检测失败后，方可认为master无法响应。这从一定程度上也防止脑裂的现象出现。
+
+
+
+
 
 By default, masterha_manager runs in foreground. You can run the masterha_manager program in background as below.
   manager_host$ nohup masterha_manager --conf=/etc/app1.cnf < /dev/null > /var/log/masterha/app1/app1.log 2>&1 &
 Set nohup, and make sure that masterha_manager does not read/write from/to STDIN, STDOUT and STDERR.
 
-If you create a file at /etc/masterha_default.cnf, MHA Manager scripts automatically reads the file as a global configuration file.
 
+
+If you create a file at /etc/masterha_default.cnf, MHA Manager scripts automatically reads the file as a global configuration file.
 Application-scope parameters should be written in [server default] block. In [serverN] blocks, you should set local-scope parameters.
 hostname is mandatory local-scope parameter so has to be written here. Block name should start from "server". 
 Internally server configurations are sorted by block name, and sorted order matters when MHA decides new master
