@@ -59,6 +59,7 @@ https://bugs.mysql.com/
 --net_read_timeout
 connect_timeout
 max_allowed_packet
+wait_timeout
 
 -------------------------------------------------------------------------------------------------------
 排错步骤：
@@ -129,16 +130,9 @@ that they take two events in the binary log of the master.
 确定权限表已启动，并且有相应的权限
 确认使用了正确的配置文件（禁止使用配置文件启动：mysqladmin --no-defaults -u root version）
 确认密码是否正确（重置root密码：http://dev.mysql.com/doc/refman/5.6/en/resetting-permissions.html）
-
-
-
-
-
-
- 
 Lost connection to MySQL server:
 网络是不是通的？稳不稳定？（能不能连？）
-是否超过连接等待的超时时间？（connect_timeout，能连，但是不是断了？）
+是否超过连接等待的超时时间？（connect_timeout，wait_timeout,能连，但是不是断了？）
 是否超过发送的最大网络数据包大小？（有大字段超过max_allowed_packet，能连没断，但是不是数据包太大了？）
 是否读取网络数据的时间超时？（有大查询，查询行数很多，读取时超过net_read_timeout，能连没断，数据包大小合适，但是不是发送时间过长了？）
 
