@@ -51,6 +51,46 @@ hostname is mandatory local-scope parameter so has to be written here. Block nam
 Internally server configurations are sorted by block name, and sorted order matters when MHA decides new master
 
 
+工作过程：
+a、MHA manager启动时的校验阶段
+   根据配置文件校验复制配置以及识别当前的master
+   导致监控终止情形：复制配置异常，存在的异常slave，一些需要的脚本脚本异常
+   MHA manager启动前可以通过masterha_check_ssh以及masterha_check_repl检测
+ 
+b、监控master server阶段
+   MHA manager启动成功后，输出日志[info] Ping(SELECT) succeeded, waiting until MySQL doesn't respond..
+   MHA会定期ping master，缺省的间隔为1秒，直到master死掉
+   MHA manager不会监控slave的状态，任意的Stopping/Restarting/Adding/Removing slaves不影响当前MHA监控
+   当添加或移除slave节点时，建议修改配置文件以及重启MHA manager 
+c、侦测到master server异常阶段
+   3次连续ping master失败，参数secondary_check_script可用于double check
+ 
+d、开启failover阶段
+   MHA再次读取配置文件(防止主从配置已更改)，校验master以及当前masetr的从库
+   MHA也会校验诸如复制异常以及是否存在一些从库有不同的主
+   启动failover（排除上次failover失败或者failover时间间隔太短）
+ 
+e.隔离master server阶段（可选）
+   如果配置文件定义了IP漂移脚本则此时会关闭master IP
+   如果配置文件定义了关闭master脚本，则调用脚本关闭master以避免脑裂
+ 
+f.恢复一个新的master
+   从slave节点获取最新的end_log_pos (Read_Master_Log_Pos)位置
+   从上一步获取的位置开始，读取及保存crashed master全部二进制日志文件（ssh可达）
+   决定新的master（根据配置文件定义的优先级别）
+   产生差量的binary/relay log events并且apply到新的master
+ 
+g.激活一个新的master
+   如果配置文件定义了IP漂移脚本则此时会将IP漂移到新master
+ 
+i.恢复剩余的slave
+   对所有从库并行地产生差量binary/relay log events 
+   并用apply差量binary/relay log events到各从库
+   启动复制
+ 
+j.通过切换结果（可选）
+   邮件发送
+   备份作业，管理工具调整等
 ----------------------------------------------------------------------------------------------------------------------------------
 
 
