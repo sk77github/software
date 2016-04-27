@@ -119,6 +119,11 @@ that they take two events in the binary log of the master.
 4、一个insert/update/delete不一定只对应一个event，由引擎和日志格式决定
 
 
+复制延迟：
+第三方多线程复制插件：
+http://dinglin.iteye.com/blog/1672742
+
+
 
 
 
