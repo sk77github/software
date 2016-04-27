@@ -2,24 +2,16 @@ binlog server（共享存储？）+ Semi-Synchronous Replication  +   GTID   + M
 怎么搞分布式事务？
 
 ---------------------------------------------------------------------------------------------------------
+需要较好地理解宕机及选举相关的问题，可以阅读并思考Paxos相关的论文，
+比如Paxos made simple, The Part-time Parliament, Paxos made live, Paxos made practical, Chubby等。
+
+
 分布式环境判断的推模式与拉模式：
 MHA属于拉模式，mha要获取mysql master的信息。
 zookeeper（分布式锁）属于推模式，mysql或者其他软件需要向zookeeper注册，抢锁。（分布式锁服务实现主节点选举大致如下：
 主节点和备节点到Chubby中抢锁，抢到锁的节点在锁的有效期(Lease期)内提供服务，当主节点锁的Lease快要到期时，主节点申请延长锁的超时时间，
 正常情况下分布式锁服务总是优先满足主节点的请求，当主节点出现故障时，备节点能够抢到锁切换为主节点提供服务。
 ）
-
-
-云计算系统常常是单一主控机(single master)+多工作机(many workers)模式，worker实现数据的存储、读写、分析处理等，
-master保存部分或全部元数据、实现worker的任务分配、状态监控、负载平衡、故障监测和故障恢复等。Master常常使用heartbeat+lease或类似机制
-监控worker的状态，向worker定期发放lease，worker在lease有效期(例如几秒到几十秒)内才进行工作，lease失效后则停止工作。
-如果master发现某个worker在过去一段时间内没有响应或者出现其他异常，则不再向该worker发放新的lease，并在旧的lease到期后重新分配
-该worker上的任务。这使得master得以发现有故障的worker并将其从系统中剔除，并在适当的时候采取措施以避免数据丢失或者任务失败等等，
-也使得系统管理员不需要进行任何额外的操作就可以下线部分worker(例如机器维护、软件硬件升级、机器淘汰等等)。如果没有其他措施，则云计算系统
-的单一master会成为整个系统的单点。为了避免这种现象的出现，云计算系统通常还有一个分布式选举系统(例如Google的Chubby，开源实现zookeeper)，
-master也不再是单一master，而是单一主master+几个辅master，辅master保持着对主master的准同步，一旦主master故障，
-则其中一个辅master会被选举并升级成为主master。这种选举和升级通常需要若干秒的时间，但由于worker在lease有效期内即使没有master
-也会继续工作，且应用程序对master的访问通过名字而不是IP地址，因此上层应用程序通常看不到这种切换，或者是一个短暂的停顿。
 
 
 
