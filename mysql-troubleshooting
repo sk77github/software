@@ -119,9 +119,16 @@ that they take two events in the binary log of the master.
 4、一个insert/update/delete不一定只对应一个event，由引擎和日志格式决定
 
 
+
 复制延迟：
 第三方多线程复制插件：
 http://dinglin.iteye.com/blog/1672742
+
+
+出现延迟时，查看下当前slave的cpu和磁盘状况
+一般来说如果从库没有其他业务，单线程的原因，cpu跑满一个核已经是极限了。
+磁盘io满的话，确认下是否有其他进程或mysql线程影响了它(比如从库正在dump或者超大的sql在执行)，也可以尝试调整下slave上关于io的几个参数
+
 
 
 
