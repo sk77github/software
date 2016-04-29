@@ -1,3 +1,10 @@
+多机房HA：
+https://github.com/alibaba/otter
+https://github.com/alibaba/canal
+https://github.com/alibaba/yugong
+
+------------------------------------------------------------------------------------------------------------------------------
+
 binlog server（共享存储？）+ Semi-Synchronous Replication  +   GTID   + MHA  + LVS + Keeplived + 中间件（读写分离，水平分表）
 怎么搞分布式事务？
 
