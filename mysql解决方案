@@ -48,8 +48,10 @@ percona galera cluster
 
 中间件：
 vitess
+https://github.com/twitter/gizzard
 kingshard
 mixer
+atlas
 
 
 
