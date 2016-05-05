@@ -1,5 +1,6 @@
 安装：
 wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.10-linux-glibc2.5-x86_64.tar.gz
+md5sum mysql-5.7.10-linux-glibc2.5-x86_64.tar.gz    验证下载的压缩包，出来的md5值与mysql官网下载页面对比下
 shell> groupadd mysql
 shell> useradd -r -g mysql -s /bin/false mysql
 shell> cd /usr/local
