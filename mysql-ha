@@ -131,3 +131,21 @@ yum install perl-Time-HiRes.x86_64 perl-Parallel-ForkManager.noarch perl-Log-Dis
 
 下载资源 ：
 http://www.chocolee.cn/download/mha/
+
+
+----------------------------------------------------------------------------------------------------------------------
+编译安装mha，源码tar包的mha4mysql-manager-0.56/samples/scripts目录下，
+有master_ip_failover  master_ip_online_change  power_manager  send_report四个有用的脚本
+
+下载源码包：
+https://code.google.com/p/mysql-master-ha/wiki/Downloads?tm=2
+
+安装perl依赖：
+yum install perl-DBD-MySQL perl-Time-HiRes.x86_64 perl-Parallel-ForkManager.noarch perl-Log-Dispatch-FileRotate.noarch perl-Log-Dispatch-Configurator-Any.noarch perl-Log-Dispatch-Array.noarch perl-Log-Dispatch.noarch perl-Log-Dispatch-Perl.noarch perl-Log-Dispatch-Config.noarch perl-Config-Tiny.noarch
+
+编译安装：
+cd /root/mha4mysql-node-0.56 && perl Makefile.PL && make && make install
+cd /root/mha4mysql-manager-0.56 && perl Makefile.PL && make && make install
+
+拷贝四个有用脚本：
+cp /root/mha4mysql-manager-0.56/samples/scripts/* /usr/local/bin
