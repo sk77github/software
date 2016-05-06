@@ -113,6 +113,8 @@ log-slave-updates=ON
 gtid_mode=ON
 enforce-gtid-consistency=ON
 5，
+加从库权限
+GRANT RELOAD, SUPER, REPLICATION SLAVE ON *.* TO 'rep'@'10.3.19.166' IDENTIFIED BY  '';
 CHANGE MASTER TO MASTER_HOST = host,MASTER_PORT = port,MASTER_USER = user,MASTER_PASSWORD = password,MASTER_AUTO_POSITION = 1;
 6，
 START SLAVE;
