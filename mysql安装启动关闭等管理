@@ -85,10 +85,10 @@ cp bin/mysql /usr/bin
 
 装好后：
 bin/mysql -u root -p  登入系统改密码 删test库，删匿名用户
+mysql> CREATE USER 'root'@'127.0.0.1' IDENTIFIED BY '';
 mysql> drop database test;
-mysql> delete from mysql.user where user != 'root' or host != 'localhost';     
-mysql> update mysql.user set password=password('kingshard') where user = 'root' and host = 'localhost';   
-mysql> flush privileges;
+mysql> delete from mysql.user where user != 'root' or host != '127.0.0.1';     
+
 
 ----------------------------------------------------------------------------------------------------------------------
 
