@@ -88,7 +88,9 @@ cp /data/mysql/bin/mysqld_safe /usr/bin
 bin/mysql -u root -p  登入系统改密码 删test库，删匿名用户
 mysql> CREATE USER 'root'@'127.0.0.1' IDENTIFIED BY '';
 mysql> drop database test;
-mysql> delete from mysql.user where user != 'root' or host != '127.0.0.1';     
+mysql> update mysql.user set password=password('kingshard') where user = 'root' and host = 'localhost'; 
+mysql> update user set Grant_priv = 'Y' where host = '127.0.0.1';
+mysql> flush privileges;
 
 
 ----------------------------------------------------------------------------------------------------------------------
