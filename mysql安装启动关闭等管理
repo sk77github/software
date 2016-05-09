@@ -1,3 +1,7 @@
+在做环境前，检查你所有会涉及到的环境（清理清楚外部依赖），比如/etc下可能有默认的my.cnf
+
+
+
 安装：
 wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.10-linux-glibc2.5-x86_64.tar.gz
 md5sum mysql-5.7.10-linux-glibc2.5-x86_64.tar.gz    验证下载的压缩包，出来的md5值与mysql官网下载页面对比下
@@ -50,6 +54,22 @@ bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  -
 bin/mysql -u root -p  登入系统改密码 
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
 ---------------------------------------------------------------------------------------------------------------------
+5.6安装 script
+groupadd mysql
+useradd -r -g mysql -s /bin/false mysql
+cd /data
+tar zxvf /path/to/mysql-VERSION-OS.tar.gz
+ln -s full-path-to-mysql-VERSION-OS mysql
+cd mysql
+chown -R mysql .
+chgrp -R mysql .
+scripts/mysql_install_db --user=mysql
+chown -R root .
+chown -R mysql data
+bin/mysqld_safe --user=mysql &
+cp support-files/mysql.server /etc/init.d/mysql.server
+
+----------------------------------------------------------------------------------------------------------------------
 
 
 升级：
