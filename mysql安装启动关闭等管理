@@ -78,6 +78,7 @@ log-slave-updates=ON
 gtid_mode=ON
 enforce-gtid-consistency=ON
 skip-slave-start
+skip-name-resolve
 )
 cp support-files/mysql.server /etc/init.d/mysql.server
 cp bin/mysql /usr/bin
