@@ -82,6 +82,7 @@ skip-name-resolve
 )
 cp support-files/mysql.server /etc/init.d/mysql.server
 cp bin/mysql /usr/bin
+cp /data/mysql/bin/mysqld_safe /usr/bin
 
 装好后：
 bin/mysql -u root -p  登入系统改密码 删test库，删匿名用户
