@@ -126,7 +126,7 @@ yum install perl-Time-HiRes.x86_64 perl-Parallel-ForkManager.noarch perl-Log-Dis
 
 3，配置各mysql机器 ssh无密码登录
 
-4，搭建mysql复制拓扑
+4，搭建mysql复制拓扑(加权限时，要能够两两复制）
 
 
 下载资源 ：
