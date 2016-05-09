@@ -67,7 +67,24 @@ scripts/mysql_install_db --user=mysql
 chown -R root .
 chown -R mysql data
 bin/mysqld_safe --user=mysql &
+mv my.cnf /etc
+(修改/etc/my.cnf配置，这里也要用脚本写入
+basedir = /data/mysql
+datadir = /data/mysql/data
+port = 3306
+server_id = 1812
+log-bin  
+log-slave-updates=ON
+gtid_mode=ON
+enforce-gtid-consistency=ON
+skip-slave-start
+)
 cp support-files/mysql.server /etc/init.d/mysql.server
+
+装好后：
+bin/mysql -u root -p  登入系统改密码 
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
+removing the test databases and anonymous user created by default
 
 ----------------------------------------------------------------------------------------------------------------------
 
