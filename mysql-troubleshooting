@@ -142,6 +142,7 @@ http://dinglin.iteye.com/blog/1672742
 确定网络无问题。
 确定mysql已经起来。
 确定mysql配置的监听ip（--bind-address），端口。是否有skip-networking.
+确定名字解析没有问题（/etc/hosts,DNS等）如果用ip连，可以通过skip-name-resolve禁用名字解析
 使用netstat命令查看端口，确定连接使用的port还是socket
 确定权限表已启动，并且有相应的权限
 确认使用了正确的配置文件（禁止使用配置文件启动：mysqladmin --no-defaults -u root version）
