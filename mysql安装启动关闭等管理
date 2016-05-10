@@ -68,7 +68,8 @@ chown -R root .
 chown -R mysql data
 bin/mysqld_safe --user=mysql &
 mv my.cnf /etc
-(修改/etc/my.cnf配置，这里也要用脚本写入
+(修改/etc/my.cnf配置，这里也要用脚本写入,配置的合理度，直接关系到运维的复杂度，相应的表的规范度，直接关系到运维的复杂度（比如表必须有
+主键，没有主键从库删除，更新就会很慢等很多问题）
 basedir = /data/mysql
 datadir = /data/mysql/data
 port = 3306
