@@ -113,35 +113,33 @@ my.cnf 配置文件样例一：
 
 [mysql]
 # DO NOT CHANGE
-port                           = 3306
-default-character-set          = utf8
+port                           = 13307
+default-character-set	       = utf8
 
-[mysqld]
+[mysqld]  
 # DO NOT CHANGE
-
-#server_id                      = 
-basedir                        = /usr/local/mysql/base
-datadir                        = /usr/local/mysql/data/3306/
-tmpdir                         = /usr/local/mysql_tmp
-socket                         = /usr/local/mysql/data/3306//mysql_3306.sock
-port                           = 3306
+server_id                      = 788857703
+basedir                        = /data/jdb/mysql/base
+datadir                        = /data/jdb/mysql/data/13307/
+tmpdir                         = /tmp
+socket                         = /data/jdb/mysql/data/13307//mysql_13307.sock
+port                           = 13307
 binlog_format                  = row
-log-bin                        = /usr/local/mysql/binlog/3306/mysql-bin
+log-bin                        = /data/jdb/mysql/binlogw/13307/mysql-bin
 relay-log                      = mysql-relay-bin
 log-slave-updates              = 1
 skip_slave_start               = 1
 skip-name-resolve              = 1
 replicate_wild_ignore_table    = mysql.backup_%
 max_allowed_packet             = 64M
-read_only                      = 0
+read_only                      = 1
 
 default_storage_engine         = InnoDB
 character_set_server           = utf8
 
 skip-external-locking          = 1
 
-innodb_strict_mode             = 1
-innodb_buffer_pool_size        = 128G
+innodb_buffer_pool_size        = 64G
 innodb_stats_on_metadata       = 0
 innodb_file_format             = Barracuda
 innodb_flush_method            = O_DIRECT
@@ -150,8 +148,38 @@ innodb_log_file_size           = 1024M
 innodb_log_buffer_size         = 64M
 innodb_file_per_table          = 1
 innodb_max_dirty_pages_pct     = 60
-innodb_io_capacity             = 4000
+innodb_io_capacity             = 2000
 innodb_data_file_path          = ibdata1:1G:autoextend
+
+#ADD INNODB
+innodb_buffer_pool_instances = 16
+innodb_flush_log_at_trx_commit = 1
+innodb_adaptive_flushing = 1
+innodb_thread_concurrency = 0
+innodb_stats_persistent = 1
+innodb_purge_threads = 4
+innodb_use_native_aio = 1
+innodb_use_sys_malloc = 1
+innodb_autoinc_lock_mode = 2
+innodb_change_buffering = inserts
+innodb_read_io_threads	= 16
+innodb_write_io_threads	= 16
+
+#ADD REPLICATION
+binlog_row_image = minimal
+binlog_checksum = CRC32
+master_verify_checksum = on
+slave_sql_verify_checksum = on
+expire_logs_days	= 14	
+slave_net_timeout	= 30	
+
+#ADD OTHERS
+metadata_locks_hash_instances = 256
+table_open_cache_instances = 16
+lower_case_table_names = 1
+back_log = 1500
+wait_timeout	=3600
+interactive_timeout	=3600
 
 # CACHES AND LIMITS #
 key_buffer_size                = 32M
@@ -169,19 +197,18 @@ open_files_limit               = 65535
 log_error                      = mysql-error.log
 slow_query_log                 = 1
 slow_query_log_file            = mysql-slow.log
+long_query_time                = 2
 
 # SEMISYNC #
-plugin-load                    = "rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
-rpl-semi-sync-master-enabled   = 1
-rpl-semi-sync-slave-enabled    = 1
+#plugin-load                    = "rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+#rpl-semi-sync-master-enabled   = 1
+#rpl-semi-sync-slave-enabled    = 1
 # SEMISYNC END #
 
 # ATTENTION #
 replicate-ignore-table         = mysql.ibbackup_binlog_marker
 slave-skip-errors              = ddl_exist_errors
 sync_binlog                    = 1
-expire_logs_days               = 7
-max_binlog_size                = 250M
 
 relay-log-info-repository      = TABLE
 relay_log_recovery             = 1
@@ -192,8 +219,10 @@ gtid-mode                      = ON
 enforce-gtid-consistency       = 1
 # GTID END #
 
-log_bin_trust_function_creators=1
-lower_case_table_names = 1
+innodb_spin_wait_delay = 10
+innodb_sync_spin_loops = 100
+default-time_zone = '+8:00'
+
 
 end my.cnf
 --------------------------------------------------------------------------------------------------------------------------------
