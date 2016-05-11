@@ -178,6 +178,14 @@ Start the server with the --replicate-wild-ignore-table=mysql.% option to ignore
 
 
 
+半同步复制
+semisynchronous replication works best for close servers communicating over fast networks, 
+and worst for distant servers communicating over slow networks.
+
+it is important to monitor the rpl_semi_sync_master_status status variable to disable semisynchronous replication in case of a timeout.
+The value is OFF if the plugin is not enabled or the master has fallen back to asynchronous replication due to commit acknowledgment
+timeout. 
+
 -------------------------------------------------------------------------------------------------------------
 shard方案：
 
