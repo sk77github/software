@@ -83,7 +83,117 @@ binlog与redo log数据一致性：
 innodb_support_xa         binlog与redo log最终持久化的事务要一致，且事务的执行顺序要一致，这样主从同步（设计问题，因为存储引擎是插件）
 
 
+innodb_strict_mode=       
+//类似sql_mode，When innodb_strict_mode is ON,some problems generate an immediate error and the table or index is not created, 
+//avoiding a troubleshooting session later.
+
+innodb_stats_on_metadata=
+//This variable is disabled by default as of MySQL 5.6.6
+
+innodb_file_format=
+//The Barracuda file format is required for certain InnoDB features such as table compression.
+
+innodb_flush_method=
+//on a system with a hardware RAID controller and battery-backed write cache, O_DIRECT can help to avoid double buffering 
+//between the InnoDB buffer pool and the operating system's file system cache. 
+
+
+
+
+
 
 
 system variable:
 read_only
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+my.cnf 配置文件样例一：
+
+[mysql]
+# DO NOT CHANGE
+port                           = 3306
+default-character-set          = utf8
+
+[mysqld]
+# DO NOT CHANGE
+
+#server_id                      = 
+basedir                        = /usr/local/mysql/base
+datadir                        = /usr/local/mysql/data/3306/
+tmpdir                         = /usr/local/mysql_tmp
+socket                         = /usr/local/mysql/data/3306//mysql_3306.sock
+port                           = 3306
+binlog_format                  = row
+log-bin                        = /usr/local/mysql/binlog/3306/mysql-bin
+relay-log                      = mysql-relay-bin
+log-slave-updates              = 1
+skip_slave_start               = 1
+skip-name-resolve              = 1
+replicate_wild_ignore_table    = mysql.backup_%
+max_allowed_packet             = 64M
+read_only                      = 0
+
+default_storage_engine         = InnoDB
+character_set_server           = utf8
+
+skip-external-locking          = 1
+
+innodb_strict_mode             = 1
+innodb_buffer_pool_size        = 128G
+innodb_stats_on_metadata       = 0
+innodb_file_format             = Barracuda
+innodb_flush_method            = O_DIRECT
+innodb_log_files_in_group      = 2
+innodb_log_file_size           = 1024M
+innodb_log_buffer_size         = 64M
+innodb_file_per_table          = 1
+innodb_max_dirty_pages_pct     = 60
+innodb_io_capacity             = 4000
+innodb_data_file_path          = ibdata1:1G:autoextend
+
+# CACHES AND LIMITS #
+key_buffer_size                = 32M
+tmp_table_size                 = 256M
+max_heap_table_size            = 256M
+table_open_cache               = 4096
+query_cache_type               = 0
+query_cache_size               = 0
+max_connections                = 5000
+thread_cache_size              = 1024
+open_files_limit               = 65535
+
+# LOGGING #
+# DO NOT CHANGE
+log_error                      = mysql-error.log
+slow_query_log                 = 1
+slow_query_log_file            = mysql-slow.log
+
+# SEMISYNC #
+plugin-load                    = "rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+rpl-semi-sync-master-enabled   = 1
+rpl-semi-sync-slave-enabled    = 1
+# SEMISYNC END #
+
+# ATTENTION #
+replicate-ignore-table         = mysql.ibbackup_binlog_marker
+slave-skip-errors              = ddl_exist_errors
+sync_binlog                    = 1
+expire_logs_days               = 7
+max_binlog_size                = 250M
+
+relay-log-info-repository      = TABLE
+relay_log_recovery             = 1
+master_info_repository         = TABLE
+
+# GTID #
+gtid-mode                      = ON
+enforce-gtid-consistency       = 1
+# GTID END #
+
+log_bin_trust_function_creators=1
+lower_case_table_names = 1
+
+end my.cnf
+--------------------------------------------------------------------------------------------------------------------------------
