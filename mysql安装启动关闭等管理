@@ -54,7 +54,7 @@ bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  -
 bin/mysql -u root -p  登入系统改密码 
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';  设定自己的密码
 ---------------------------------------------------------------------------------------------------------------------
-5.6安装 script
+5.6安装 script      如果自定义datadir等目录，需要提前建好相关目录，并设置属主为mysql
 groupadd mysql
 useradd -r -g mysql -s /bin/false mysql
 cd /data
