@@ -214,6 +214,14 @@ SHOW STATUS LIKE 'Rpl_semi_sync%';
 monitor the Rpl_semi_sync_master_status status variable to determine whether the master currently 
 is using asynchronous or semisynchronous replication.
 
+
+
+crash-safe复制：
+解决master.info文件和relay-log.info文件。非同步刷盘问题,每当系统发生crash,存储的偏移量可能都不准确.（同步刷盘性能接受不了）
+使用以下配置，将执行事务和记录偏移量放入同一个事务中：
+relay-log-info-repository      = TABLE
+relay_log_recovery             = 1
+master_info_repository         = TABLE
 -------------------------------------------------------------------------------------------------------------
 shard方案：
 
