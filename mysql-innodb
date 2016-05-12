@@ -97,3 +97,14 @@ Redo log buffer空间不足时
 binlog切换时
 我们所熟悉的参数innodb_flush_log_at_trx_commit 作用于事务提交时，这也是最常见的场景：
 当设置该值为1时，每次事务提交都要做一次fsync，这是最安全的配置，即使宕机也不会丢失事务；
+
+
+
+---------------------------------------------------------------------------------------------------------------------------
+change buffer：
+purge buffering，insert buffering，delete buffering
+
+------------------------------------------------------------------------------------------------------------------------
+innodb purge操作：
+removing obsolete values from indexes; physically removing rows that were marked for deletion by previous DELETE statements.
+从索引中删去旧的无用的值。物理删除之前用delete标记删除的行。
