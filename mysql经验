@@ -186,6 +186,25 @@ it is important to monitor the rpl_semi_sync_master_status status variable to di
 The value is OFF if the plugin is not enabled or the master has fallen back to asynchronous replication due to commit acknowledgment
 timeout. 
 
+配置：
+To use semisynchronous replication,
+have_dynamic_loading system variable is YES. Binary distributions should support dynamic loading.
+Replication must already be working. 
+
+INSTALL PLUGIN rpl_semi_sync_master SONAME 'semisync_master.so';
+INSTALL PLUGIN rpl_semi_sync_slave SONAME 'semisync_slave.so';
+
+To see which plugins are installed, use the SHOW PLUGINS statement,
+ or query the INFORMATION_SCHEMA.PLUGINS table.
+ 
+ show global variables like "%rpl_semi%";   查看是否开启
+ 如果是线上异步复制改半同步的情况，使用以下命令过程
+ mysql> SET GLOBAL rpl_semi_sync_master_enabled = {0|1};
+mysql> SET GLOBAL rpl_semi_sync_master_timeout = N;The default value is 10000 (10 seconds).
+
+mysql> SET GLOBAL rpl_semi_sync_slave_enabled = {0|1};
+mysql> STOP SLAVE IO_THREAD; START SLAVE IO_THREAD;
+
 -------------------------------------------------------------------------------------------------------------
 shard方案：
 
