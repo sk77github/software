@@ -205,6 +205,11 @@ mysql> SET GLOBAL rpl_semi_sync_master_timeout = N;The default value is 10000 (1
 mysql> SET GLOBAL rpl_semi_sync_slave_enabled = {0|1};
 mysql> STOP SLAVE IO_THREAD; START SLAVE IO_THREAD;
 
+最后在主从库上分别执行以下命令验证配置是否生效：
+SHOW STATUS LIKE 'Rpl_semi_sync%';
+monitor the Rpl_semi_sync_master_status status variable to determine whether the master currently 
+is using asynchronous or semisynchronous replication.
+
 -------------------------------------------------------------------------------------------------------------
 shard方案：
 
