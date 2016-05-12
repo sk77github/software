@@ -191,6 +191,10 @@ To use semisynchronous replication,
 have_dynamic_loading system variable is YES. Binary distributions should support dynamic loading.
 Replication must already be working. 
 
+（
+除了这样install插件外，还可以在启动文件my.cnf里通过plugin-load参数指定启动数据库时直接载入插件，例如：
+plugin-load = "rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+）
 INSTALL PLUGIN rpl_semi_sync_master SONAME 'semisync_master.so';
 INSTALL PLUGIN rpl_semi_sync_slave SONAME 'semisync_slave.so';
 
