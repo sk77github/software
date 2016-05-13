@@ -222,6 +222,19 @@ crash-safe复制：
 relay-log-info-repository      = TABLE
 relay_log_recovery             = 1
 master_info_repository         = TABLE
+
+
+
+
+多源复制：
+
+
+
+
+多线程复制：
+
+
+
 -------------------------------------------------------------------------------------------------------------
 shard方案：
 
@@ -347,6 +360,11 @@ online ddl
 大事务容易产生锁等待，排序去重的cpu密集操作容易导致cpu等待，大量随机读容易导致IO等待
 那么事情的关键点就在于为什么会有突然的并发了
 -----------------------------------------------------------------------------------------------------------------------
+json数据类型：
+使用虚拟列构建json里面key的索引，A secondary index may be created on one or more virtual columns or on a combination of
+virtual columns and non-generated virtual columns. Secondary indexes on virtual columns may be defined as UNIQUE.
+
+------------------------------------------------------------------------------------------------------------------------
 HA:
 中间件自己的HA怎么做？
 中间件如何改变DB访问方式：
