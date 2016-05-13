@@ -98,6 +98,18 @@ i.恢复剩余的slave
 j.通过切换结果（可选）
    邮件发送
    备份作业，管理工具调整等
+   
+   
+
+各脚本文件说明：
+masterha_check_ssh    检查ssh配置
+masterha_check_repl   检查复制环境
+启动mha
+nohup masterha_manager --conf=/etc/masterha/app1.cnf --remove_dead_master_conf --ignore_last_failover < /dev/null > /var/log/masterha/app1/manager.log 2>&1 & 
+masterha_check_status 检查mha manager状态
+用日志确定mha健康状态成功
+/var/log/masterha/app1/manager.log
+masterha_stop         关闭mha
 ----------------------------------------------------------------------------------------------------------------------------------
 
 
