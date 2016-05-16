@@ -8,3 +8,4 @@ http://dev.mysql.com/doc/refman/5.6/en/mysqlbinlog-backup.html
 基于主键合并mysql binlog的event（牺牲了slave实时一致性的同步回访，因为是灾备，不提供线上服务，所以最终一致性即可）
 同步复制，返回给用户慢，但一旦返回给用户，就最少有两份数据落盘。
 异步复制，返回给用户快，但因为是异步的，在某个时序序列里宕机，那么必然有数据丢失。
+半同步复制，如果是收到slave的ack，master在commit返回给用户，那么数据无丢失。如果先commit返回给用户，后接受ack就会丢数据。
