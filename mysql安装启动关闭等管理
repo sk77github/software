@@ -63,10 +63,8 @@ ln -s full-path-to-mysql-VERSION-OS mysql
 cd mysql
 chown -R mysql .
 chgrp -R mysql .
-scripts/mysql_install_db --user=mysql
-chown -R root .
-chown -R mysql data
-bin/mysqld_safe --user=mysql &
+
+这里就要准备配置文件了
 mv my.cnf /etc
 (修改/etc/my.cnf配置，这里也要用脚本写入,配置的合理度，直接关系到运维的复杂度，相应的表的规范度，直接关系到运维的复杂度（比如表必须有
 主键，没有主键从库删除，更新就会很慢等很多问题）
@@ -81,6 +79,14 @@ enforce-gtid-consistency=ON
 skip-slave-start
 skip-name-resolve
 )
+
+scripts/mysql_install_db --user=mysql(如果/etc/ 下有老的my.cnf 这里需要注意)
+
+chown -R root .
+chown -R mysql data
+
+bin/mysqld_safe --user=mysql &
+
 cp support-files/mysql.server /etc/init.d/mysql.server
 cp bin/mysql /usr/bin
 cp /data/mysql/bin/mysqld_safe /usr/bin
@@ -88,11 +94,11 @@ cp mysqld /usr/bin
 
 装好后：
 bin/mysql -u root -p  登入系统改密码 删test库，删匿名用户
-mysql> CREATE USER 'root'@'127.0.0.1' IDENTIFIED BY '';
-mysql> drop database test;
-mysql> update mysql.user set password=password('kingshard') where user = 'root' and host = 'localhost'; 
-mysql> update user set Grant_priv = 'Y' where host = '127.0.0.1';
+delete  from user where host != 'localhost' and host != '127.0.0.1' or user != 'root';
+mysql> update mysql.user set password=password('kingshard') where user = 'root' ; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'devmysql'@'%' IDENTIFIED BY 'VMF9>4z@426Y';
 mysql> flush privileges;
+mysql> drop database test;
 
 
 ----------------------------------------------------------------------------------------------------------------------
