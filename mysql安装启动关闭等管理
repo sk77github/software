@@ -98,7 +98,7 @@ cp /usr/local/mysql/base/bin/my_print_defaults /usr/bin
 bin/mysql -u root -p  登入系统改密码 删test库，删匿名用户
 delete  from user where host != 'localhost' and host != '127.0.0.1' or user != 'root';
 mysql> update mysql.user set password=password('kingshard') where user = 'root' ; 
-GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'devmysql'@'%' IDENTIFIED BY 'VMF9>4z@426Y';
+GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'devmysql'@'%' IDENTIFIED BY '';
 mysql> flush privileges;
 mysql> drop database test;
 
