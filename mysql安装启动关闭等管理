@@ -88,6 +88,7 @@ chown -R mysql data
 bin/mysqld_safe --user=mysql &
 
 cp support-files/mysql.server /etc/init.d/mysql.server
+chkconfig --add mysql.server
 cp bin/mysql /usr/bin
 cp /data/mysql/bin/mysqld_safe /usr/bin
 cp mysqld /usr/bin
