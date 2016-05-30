@@ -65,3 +65,9 @@ SELECT TABLE_SCHEMA, TABLE_NAME
 FROM `information_schema`.`TABLES`
 WHERE TABLE_SCHEMA NOT IN ('information_schema','performance_schema','mysql')
 AND ENGINE='MyISAM';
+
+
+-------------------------------------------------------------------------------------------------------------
+mysql查询管理平台：
+要知道每个表，都有哪些sql在跑，这些sql属于哪个业务
+每张表的引擎，行数，索引结构，数据量大小
