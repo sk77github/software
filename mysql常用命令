@@ -35,6 +35,19 @@ flush privileges
 FLUSH TABLES WITH READ LOCK(UNLOCK TABLES 配合使用） 
 
 ------------------------------------------------------------------------------------------------------------------
+删binlog：
+
+On each slave server, use SHOW SLAVE STATUS to check which log file it is reading.
+Obtain a listing of the binary log files on the master server with SHOW BINARY LOGS.
+
+Determine the earliest log file among all the slaves. This is the target file. If all the slaves are up to date, 
+this is the last log file on the list.
+
+Make a backup of all the log files you are about to delete. (This step is optional, but always advisable.)
+Purge all log files up to but not including the target file.（
+PURGE BINARY LOGS TO 'mysql-bin.010';
+PURGE BINARY LOGS BEFORE '2008-04-02 22:46:26';）
+----------------------------------------------------------------------------------------------------------------------
 
 事务：
 start transaction  或者 begin
