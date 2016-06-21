@@ -8,20 +8,81 @@
 
 
 
+
+
 响应时间：
 
 表加字段，1千多万行，需要2分钟时间左右。
+
+
+
 
 
 qps（iops，tps）
 
 
 
+
+---------------------------------------------------------------------------------------------------------------------
+其他数据：
+
 官方手册上提及的，Mytrix和Inc.在InnoDB上存储超过1 TB的数据，还有一些其他网站使用InnoDB存储引擎，处理插入/更新的操作平均800次/秒。
 
 
 
 
+------------------------------------------------------------------------------------------------------------------------
+压测数据：
+
+[root@ ~]#sysbench --test=oltp --oltp-table-size=1000000 --oltp-read-only=off --mysql-db=test_sql --oltp-table-name=test_mha1  --init-rng=on 
+--num-threads=16 --max-requests=0 --oltp-dist-type=uniform --max-time=180 --mysql-user=root --mysql-host=127.0.0.1 
+--mysql-port=3306 --mysql-password= --db-driver=mysql --mysql-table-engine=innodb --oltp-test-mode=complex run      
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+Running the test with following options:
+Number of threads: 16
+Initializing random number generator from timer.
 
 
+Doing OLTP test.
+Running mixed OLTP test
+Using Uniform distribution
+Using "BEGIN" for starting transactions
+Using auto_inc on the id column
+Threads started!
+Time limit exceeded, exiting...
+(last message repeated 15 times)
+Done.
 
+OLTP test statistics:
+    queries performed:
+        read:                            1244068
+        write:                           444310
+        other:                           177724
+        total:                           1866102
+    transactions:                        88862  (493.66 per sec.)
+    deadlocks:                           0      (0.00 per sec.)
+    read/write requests:                 1688378 (9379.54 per sec.)
+    other operations:                    177724 (987.32 per sec.)
+
+Test execution summary:
+    total time:                          180.0065s
+    total number of events:              88862
+    total time taken by event execution: 2879.7183
+    per-request statistics:
+         min:                                  2.56ms
+         avg:                                 32.41ms
+         max:                                327.91ms
+         approx.  95 percentile:              68.62ms
+
+Threads fairness:
+    events (avg/stddev):           5553.8750/32.83
+    execution time (avg/stddev):   179.9824/0.00
+
+[root@ ~]# free -g
+             total       used       free     shared    buffers     cached
+Mem:             3          3          0          0          0          2
+-/+ buffers/cache:          0          2
+Swap:            4          0          4
+
+-----------------------------------------------------------------------------------------------------------------------------
