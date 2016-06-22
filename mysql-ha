@@ -24,8 +24,10 @@ zookeeper（分布式锁）属于推模式，mysql或者其他软件需要向zoo
 
 -------------------------------------------------------------------------------------------------------------------------
 MHA:
-When you add/remove slaves, you should update the config file and had better restart MHA.需要调整的项:
+When you add/remove slaves, you should update the config file and had better restart MHA.
+需要调整的项:
 secondary_check_script
+server组（新加入的机器，要填入配置）
 
 
 to avoid split brain：
