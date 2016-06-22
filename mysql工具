@@ -53,6 +53,9 @@ wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolki
  rpm -ivh perl-TermReadKey-2.30-3.el6.rfx.x86_64.rpm
  rpm -ivh percona-toolkit-2.2.14-1.noarch.rpm
  rpm -ql percona-toolkit（查看安装分布）
+ 
+ 使用：
+ http://www.cnblogs.com/zhoujinyi/archive/2013/05/09/3067045.html
 ---------------------------------------------------------------------------------------------------------
 
 
