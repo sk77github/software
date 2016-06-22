@@ -35,14 +35,25 @@ mysqladmin
 mysqlpump
 mk-slave-prefetch
 
-
+----------------------------------------------------------------------------------------------------
 percona的工具集
 pt-duplicate-key-checker
 pt-online-schema-change
 pt-query-digest
 pt-table-checksum
 pt-kill
-
+安装：
+wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolkit-2.2.14-1.noarch.rpm
+    如果：
+    error: Failed dependencies:
+        perl(IO::Socket::SSL) is needed by percona-toolkit-2.2.14-1.noarch
+        perl(Term::ReadKey) is needed by percona-toolkit-2.2.14-1.noarch
+ yum install perl-IO-Socket-SSL（一般perl的依赖，直接把perl(IO::Socket::SSL)用连字符接上即可）
+ wget http://pkgs.repoforge.org/perl-TermReadKey/perl-TermReadKey-2.30-3.el6.rfx.x86_64.rpm
+ rpm -ivh perl-TermReadKey-2.30-3.el6.rfx.x86_64.rpm
+ rpm -ivh percona-toolkit-2.2.14-1.noarch.rpm
+ rpm -ql percona-toolkit（查看安装分布）
+---------------------------------------------------------------------------------------------------------
 
 
 自动化审核
