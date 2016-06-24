@@ -1,0 +1,18 @@
+
+安装：
+modprobe -c | grep ip_vs
+modprobe -l | grep ip_vs
+
+lsmod |grep ip_vs
+
+modprobe ip_vs
+
+lsmod |grep ip_vs
+
+ipvsadm -Ln
+
+yum -y install ipvsadm kernel-devel libnl-devel popt-devel
+
+ipvsadm -Ln
+ 
+ 
