@@ -14,5 +14,21 @@ ipvsadm -Ln
 yum -y install ipvsadm kernel-devel libnl-devel popt-devel
 
 ipvsadm -Ln
+
+与keeplived配合：
+安装keepalived
+tar zxf keepalived-1.2.14.tar.gz
+cd keepalived-1.2.2
+./configure --prefix=/usr/local/keepalived --sysconf=/etc --with-kernel-dir=/usr/src/kernels/2.6.32-71.el6.x86_64/
+直到出现四个：yes
+Use IPVS Framework: Yes 
+IPVS sync daemon support : Yes 
+IPVS use libnl: Yes 
+Use VRRP Framework : Yes
+然后进行编译
+make && make install
+ln -s /usr/local/keepalived/sbin/keepalived /sbin/ 做个软链接
+keepalived -help 验证是否安装成功
+vi /etc/keepalived/keepalived.conf  配置keeplived
  
  
