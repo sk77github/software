@@ -102,7 +102,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'devmysql'@'%' IDENTIFIED BY '';
 mysql> flush privileges;
 mysql> drop database test;
 
-完整可运行脚本：
+完整可运行脚本：（配置文件my.cnf内容在下方）
 groupadd mysql
 useradd -r -g mysql -s /bin/false mysql
 cd /data
@@ -129,6 +129,22 @@ cp bin/my_print_defaults /usr/bin
 
 mysql -u root --password= -h 127.0.0.1 -e "use mysql;delete  from user where host != 'localhost' and host != '127.0.0.1' or user != 'root';update mysql.user set password=password('kingshard') where user = 'root' ;GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'devmysql'@'%' IDENTIFIED BY ''; flush privileges;drop database test;"
 
+my.cnf内容：
+[mysqld]
+
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
+
+basedir = /data/mysql
+datadir = /data/mysql/data
+port = 3306
+server_id = 1813（注意，这里需要动态替换为唯一server id）
+log-bin
+log-slave-updates=ON
+gtid_mode=ON
+enforce-gtid-consistency=ON
+skip-slave-start
+skip-name-resolve
+my.cnf内容end
 
 ----------------------------------------------------------------------------------------------------------------------
 
