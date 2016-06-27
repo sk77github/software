@@ -103,6 +103,7 @@ mysql> flush privileges;
 mysql> drop database test;
 
 完整可运行脚本：（配置文件my.cnf内容在下方）
+这里如果有复制环境需要注意，只在主上执行后边的删除匿名用户test库等操作
 groupadd mysql
 useradd -r -g mysql -s /bin/false mysql
 cd /data
