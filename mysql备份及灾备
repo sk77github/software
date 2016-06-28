@@ -26,12 +26,23 @@ rpm -ivh percona-xtrabackup-24-2.4.3-1.el6.x86_64.rpm
  wget ftp://rpmfind.net/linux/dag/redhat/el6/en/x86_64/dag/RPMS/libev-4.15-1.el6.rf.x86_64.rpm
  rpm -ivh libev-4.15-1.el6.rf.x86_64.rpm
  rpm -ivh percona-xtrabackup-24-2.4.3-1.el6.x86_64.rpm    
-
+--------------------------------------------------------------------------------------------------------------------------------
 使用：
 参数选项列表：https://www.percona.com/doc/percona-xtrabackup/2.4/innobackupex/innobackupex_option_reference.html
 
+1，备份
+第一步：copy数据阶段
 innobackupex --defaults-file=/etc/my.cnf（必须放在第一个，将读取当前运行这个命令的机器的/etc/my.cnf而不是远程机器的/etc/my.cnf）  
              --user=root --password=kingshard --host=xxx --databases=xtra_test（要备份的库）  /root/xtrabackup/（备份到目标目录）
 上一行命令执行完后，会在/root/xtrabackup/目录下生成，2016-06-28_16-39-09目录，目录包含：
 backup-my.cnf  ibdata1  xtrabackup_binlog_info  xtrabackup_checkpoints  xtrabackup_info  xtrabackup_logfile
 
+第二步：重放事务日志
+innobackupex --apply-log /root/xtrabackup/2016-06-28_16-39-09
+重放后目录/root/xtrabackup/2016-06-28_16-39-09包含：
+backup-my.cnf  ibdata1  ib_logfile0  ib_logfile1  ibtmp1  xtrabackup_binlog_info  xtrabackup_checkpoints  xtrabackup_info  xtrabackup_logfile
+多出了，ib_logfile0  ib_logfile1  ibtmp1 这三个文件
+
+2，还原
+
+------------------------------------------------------------------------------------------------------------------------------------
