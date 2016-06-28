@@ -9,3 +9,20 @@ http://dev.mysql.com/doc/refman/5.6/en/mysqlbinlog-backup.html
 同步复制，返回给用户慢，但一旦返回给用户，就最少有两份数据落盘。
 异步复制，返回给用户快，但因为是异步的，在某个时序序列里宕机，那么必然有数据丢失。
 半同步复制，如果是收到slave的ack，master在commit返回给用户，那么数据无丢失。如果先commit返回给用户，后接受ack就会丢数据。
+
+--------------------------------------------------------------------------------------------------------------------
+xtrabackup备份：
+
+backup，备份阶段，追踪事务日志和复制数据文件（物理备份）。
+preparing，重放事务日志，使所有的数据处于同一个时间点，达到一致性状态。
+
+安装：
+wget https://www.percona.com/downloads/XtraBackup/Percona-XtraBackup-2.4.3/binary/redhat/6/x86_64/percona-xtrabackup-24-2.4.3-1.el6.x86_64.rpm
+yum -y install perl perl-devel libaio libaio-devel perl-Time-HiRes perl-DBD-MySQL
+rpm -ivh percona-xtrabackup-24-2.4.3-1.el6.x86_64.rpm
+（如果报：
+   libev.so.4()(64bit) is needed
+ ）
+ wget ftp://rpmfind.net/linux/dag/redhat/el6/en/x86_64/dag/RPMS/libev-4.15-1.el6.rf.x86_64.rpm
+ rpm -ivh libev-4.15-1.el6.rf.x86_64.rpm
+ rpm -ivh percona-xtrabackup-24-2.4.3-1.el6.x86_64.rpm    
