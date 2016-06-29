@@ -54,6 +54,19 @@ innobackupex --apply-log /root/xtrabackup/2016-06-28_16-39-09
 backup-my.cnf  ibdata1  ib_logfile0  ib_logfile1  ibtmp1  xtrabackup_binlog_info  xtrabackup_checkpoints  xtrabackup_info  xtrabackup_logfile
 多出了，ib_logfile0  ib_logfile1  ibtmp1 这三个文件
 
+1.1其他备份命令示例：
+全备： 
+innobackupex --defaults-file=/etc/my.cnf --use-memory=10G --user=root --password=123 --compress --compress-threads=8 
+--parallel=4（ specifies the number of threads the xtrabackup child process should use to back up files concurrently.
+               Note that this option works on file level, that is, if you have several .ibd files, they will be copied in parallel. 
+               If your tables are stored together in a single tablespace file, it will have no effect. 
+               In order to decompress, the qpress utility MUST be installed and accessable within the path. 
+            ） --stream=xbstream /mysql/full --extra-lsndir=/tmp  > /mysql/full/backup.xbstream 
+若需要传到其他主机，可使用下述命令： 
+innobackupex --defaults-file=/etc/my.cnf --use-memory=10G --user=root --password=123 --compress --compress-threads=8 
+--parallel=4 --stream=xbstream /mysql/full --extra-lsndir=/tmp |ssh  root@192.168.1.194" xbstream -x -C /mysql/full" 
+
+
 2，还原
 
 ------------------------------------------------------------------------------------------------------------------------------------
