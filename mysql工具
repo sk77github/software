@@ -56,6 +56,21 @@ wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolki
  
  使用：
  http://www.cnblogs.com/zhoujinyi/archive/2013/05/09/3067045.html
+ 
+ 
+ pt-table-checksum:
+ pt-table-checksum --nocheck-replication-filters --chunk-size=1000000 --no-check-binlog-format --replicate=sps.checksums 
+ --databases=xxx h=127.0.0.1,u=root,p=123456,P=3306  
+ 
+ 
+pt-summary:
+  打印出来的信息包括：CPU、内存、硬盘、网卡等信息，还包括文件系统、磁盘调度和队列大小、LVM、RAID、网络链接信息、netstat 的统计，
+  以及前10的负载占用信息和vmstat信息。
+  
+  
+pt-mysql-summary --user=root --password=123456 --host=192.168.200.25 --port=3306
+  打印出来的信息包括：版本信息、数据目录、命令的统计、用户，数据库以及复制等信息还包括各个变量（status、variables）信息和
+  各个变量的比例信息，还有配置文件等信息。
 ---------------------------------------------------------------------------------------------------------
 
 
