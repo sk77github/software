@@ -38,7 +38,6 @@ mk-slave-prefetch
 ----------------------------------------------------------------------------------------------------
 percona的工具集
 pt-query-digest
-pt-table-checksum
 pt-kill
 
 安装：
@@ -57,6 +56,8 @@ wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolki
  使用：
  http://www.cnblogs.com/zhoujinyi/archive/2013/05/09/3067045.html
  
+ ------------------------------------------------------------------------------------------------------------------------
+ 运维类：
  
  pt-table-checksum:
  检查主从一致性
@@ -75,6 +76,8 @@ pt-online-schema-change：
 例子：
 pt-online-schema-change [OPTIONS] DSN
 options 可以自行查看 help， DNS 为你要操作的数据库和表。
+--dry-run and --execute 是互斥的，不可同时使用。
+
 –execute 这个参数的作用和工作原理的介绍的一样，会建立触发器，来保证最新变更的数据会影响至新表。
 注意：如果不加这个参数，这个工具会在执行一些检查后退出。这一举措是为了让使用这充分了解了这个工具的原理，同时阅读了官方文档。
 
@@ -86,6 +89,25 @@ pt-online-schema-change --user=root --password=hugnew --host=localhost
 pt-online-schema-change --user=root --password=hugnew --host=localhost 
                         --lock-wait-time=120 --alter="ADD COLUMN domain_id INT" D=test,t=oss_pvinfo2 --execute
  
+ 
+ 
+ --------------------------------------------------------------------------------------------------------------------
+ 监控类：
+ 
+ ----------------------------------------------------------------------------------------------------------------------
+ 性能优化类：
+
+pt-visual-explain
+格式化 explain 出来的执行计划按照tree 方式输出，方便阅读。
+
+pt-variable-advisor
+分析 mysql 的参数变量，并对可能存在的问题提出建议
+ 
+ ------------------------------------------------------------------------------------------------------------------------
+ 实用方便类：
+ 
+pt-show-grants
+规范化和打印mysql 权限，让你在复制、比较mysql 权限以及进行版本控制的时候更有效率！
  
  
  pt-duplicate-key-checker
