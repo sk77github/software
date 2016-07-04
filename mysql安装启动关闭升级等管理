@@ -162,6 +162,12 @@ my.cnf内容end
 升级：
 http://dev.mysql.com/doc/refman/5.6/en/mysql-upgrade.html
 
+pt-upgrade
+在多台服务器上执行查询，并比较有什么不同！这在升级服务器的时候非常有用，可以先安装并导数据到新的服务器上，
+然后使用这个工具跑一下sql看看有什么不同，可以找出不同版本之间的差异。
+
+
+-------------------------------------------------------------------------------------------------------------------------
 启动：
 bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
 关闭：
