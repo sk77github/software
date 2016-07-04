@@ -38,3 +38,11 @@ doublewrite buffer, which is enabled by default (innodb_doublewrite=ON). The dou
 or power outage, and improves performance on most varieties of Unix by reducing the need for fsync() operations. It is recommended that 
 the innodb_doublewrite option remains enabled if you are concerned with data integrity or possible failures. For additional information 
 about the doublewrite buffer,
+----------------------------------------------------------------------------------------------------------------------------
+
+对数据库操作的安全规范：
+
+一定要阅读了工具（相关操作）的文档，知道工具（操作）的原理，限制，工具（操作）的工作过程
+查看一下工具已知的bug列表，做到心中有数
+在准生产环境上测试一遍工具，预跑一下
+在生产环境上操作时，先备份先生产环境的数据（对于数据的备份是一直要做且有的，且验证备份）
