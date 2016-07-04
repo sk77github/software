@@ -37,11 +37,10 @@ mk-slave-prefetch
 
 ----------------------------------------------------------------------------------------------------
 percona的工具集
-pt-duplicate-key-checker
-pt-online-schema-change
 pt-query-digest
 pt-table-checksum
 pt-kill
+
 安装：
 wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolkit-2.2.14-1.noarch.rpm
     如果：
@@ -54,14 +53,43 @@ wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolki
  rpm -ivh percona-toolkit-2.2.14-1.noarch.rpm
  rpm -ql percona-toolkit（查看安装分布）
  
+ 
  使用：
  http://www.cnblogs.com/zhoujinyi/archive/2013/05/09/3067045.html
  
  
  pt-table-checksum:
+ 检查主从一致性
  pt-table-checksum --nocheck-replication-filters --chunk-size=1000000 --no-check-binlog-format --replicate=sps.checksums 
  --databases=xxx h=127.0.0.1,u=root,p=123456,P=3306  
  
+ 
+pt-online-schema-change：
+在线更改表结构，不锁表
+使用风险：
+一定要阅读了工具的文档，知道工具的原理，限制，工具的工作过程
+查看一下工具已知的bug列表，做到心中有数
+在准生产环境上测试一遍工具，预跑一下
+在生产环境上操作时，先备份先生产环境的数据（对于数据的备份是一直要做且有的，且验证备份）
+
+例子：
+pt-online-schema-change [OPTIONS] DSN
+options 可以自行查看 help， DNS 为你要操作的数据库和表。
+–execute 这个参数的作用和工作原理的介绍的一样，会建立触发器，来保证最新变更的数据会影响至新表。
+注意：如果不加这个参数，这个工具会在执行一些检查后退出。这一举措是为了让使用这充分了解了这个工具的原理，同时阅读了官方文档。
+
+使用示例：
+范例 1： 在线更改表的的引擎，这个尤其在整理 innodb 表的时候非常有用，示例如下：
+pt-online-schema-change --user=root --password=hugnew --host=localhost
+                        --lock-wait-time=120 --alter="ENGINE=InnoDB" D=test,t=oss_pvinfo2 --execute
+范例 2： 大表添加字段的，语句如下:
+pt-online-schema-change --user=root --password=hugnew --host=localhost 
+                        --lock-wait-time=120 --alter="ADD COLUMN domain_id INT" D=test,t=oss_pvinfo2 --execute
+ 
+ 
+ 
+ pt-duplicate-key-checker
+ 检查重复索引和外键
  
 pt-summary:
   打印出来的信息包括：CPU、内存、硬盘、网卡等信息，还包括文件系统、磁盘调度和队列大小、LVM、RAID、网络链接信息、netstat 的统计，
