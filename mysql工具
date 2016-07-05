@@ -132,6 +132,12 @@ yum -y install cmake  libncurses5-dev libssl-dev g++ bison openssl-devel.x86_64 
 git  clone https://github.com/mysql-inception/inception.git
 ./inception_build.sh debug（指定为debug目录）  
 
+启动：
+nohup ./Inception --port=6669 &
+登录验证：
+mysql -uroot -h127.0.0.1 -P6669 
+inception get variables;
+
 ------------------------------------------------------------------------------------------------------------------------------
 
 复制拓扑可视化
