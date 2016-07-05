@@ -121,8 +121,8 @@ pt-summary:
 pt-mysql-summary --user=root --password=123456 --host=192.168.200.25 --port=3306
   打印出来的信息包括：版本信息、数据目录、命令的统计、用户，数据库以及复制等信息还包括各个变量（status、variables）信息和
   各个变量的比例信息，还有配置文件等信息。
----------------------------------------------------------------------------------------------------------
 
+---------------------------------------------------------------------------------------------------------
 
 自动化审核
 inception
@@ -137,6 +137,18 @@ nohup ./Inception --port=6669 &
 登录验证：
 mysql -uroot -h127.0.0.1 -P6669 
 inception get variables;
+
+----------------------------------------------------
+inception web
+
+安装：
+需要Python2.7环境
+git clone https://github.com/dbalihui/inception_web.git
+pip install flask_wtf flask-script flask-debugtoolbar MySQL-python argparse
+修改配置 app/inception.py 
+
+启动：
+./run.py runserver --host 0.0.0.0
 
 ------------------------------------------------------------------------------------------------------------------------------
 
