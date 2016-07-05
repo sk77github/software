@@ -127,6 +127,13 @@ pt-mysql-summary --user=root --password=123456 --host=192.168.200.25 --port=3306
 自动化审核
 inception
 
+安装：
+yum -y install cmake  libncurses5-dev libssl-dev g++ bison openssl-devel.x86_64 git ncurses-devel
+git  clone https://github.com/mysql-inception/inception.git
+./inception_build.sh debug（指定为debug目录）  
+
+------------------------------------------------------------------------------------------------------------------------------
+
 复制拓扑可视化
 https://github.com/outbrain/orchestrator
 
