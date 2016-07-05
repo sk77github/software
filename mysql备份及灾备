@@ -25,7 +25,9 @@ innobackupex 收到 xtrabackup 通知后，执行FLUSH TABLES WITH READ LOCK (FT
 xtrabackup 收到 innobackupex 备份完非 InnoDB 通知后，就停止 redo 拷贝线程，然后通知 innobackupex redo log 拷贝完成（通过创建文件）；
 innobackupex 收到 redo 备份完成通知后，就开始解锁，执行 UNLOCK TABLES；
 最后 innobackupex 和 xtrabackup 进程各自完成收尾工作，如资源的释放、写备份元数据信息等，innobackupex 等待 xtrabackup 子进程结束后退出。
-
+---------------------------------------------------------------------------------------------------
+以后要做备份自动化：
+https://www.centos.bz/2013/09/innobackupex-auto-backup-with-shell/
 ---------------------------------------------------------------------------------------------------------------------
 安装：
 wget https://www.percona.com/downloads/XtraBackup/Percona-XtraBackup-2.4.3/binary/redhat/6/x86_64/percona-xtrabackup-24-2.4.3-1.el6.x86_64.rpm
