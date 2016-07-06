@@ -200,6 +200,14 @@ FTWRL备份时除了有锁等待造成其他线程饿死的情况，确实还有
 SQL线程执行到Xid event，准备提交事务，请求 COMMIT 锁，被备份线程阻塞；
 备份线程为了获取 slave 执行位点，执行 show slave status，需要获取 rli->data_lock，被 SQL 线程阻塞。
 
+另一种死锁情况：
+备份线程执行 FTWRL，拿到 COMMIT 锁；
+SQL线程执行到Xid event，准备提交事务，请求 COMMIT 锁，被备份线程阻塞；
+用户执行 stop slave，准备停掉备库复制线程，等待 SQL 线程退出；
+备份线程为了获取 slave 执行位点，执行 show slave status，需要获取 LOCK_active_mi 锁，被用户线程（stop slave）阻塞。
+这次是备份线程、SQL 线程、用户线程3个线程互相持有等待，形成死锁。
+这次并不是代码bug，算是一个用法问题，因此我们在运维过程中，如果发现 SQL 线程在 Waiting for commit lock，就不要 stop slave。
+
 小技巧：
 在手动做FLUSH TABLES WITH READ LOCK/set global read_only=1之前，先执行一下FLUSH TABLES，能够很大概率地减小系统变成只读的时间
 
