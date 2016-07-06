@@ -170,7 +170,7 @@ by executing UNLOCK TABLES.
 2，close open tables - this step will block until all statements started previously have stopped
 3，set a flag to block commits
 
-备份时的作用：
+备份时的作用：（为了避免FTWRL的影响，所以一般在备库做备份）
 FTWRL的3个步骤：
 1. 上全局读锁
 2. 清理表缓存
