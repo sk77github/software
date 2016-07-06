@@ -175,6 +175,7 @@ LOCK TABLES ... READ  表读锁
 FLUSH TABLES WITH READ LOCK(UNLOCK TABLES 配合使用）：FLUSH TABLES WITH READ LOCK后一定要UNLOCK TABLES，除非你想让系统只读！
 
 作用：
+阻止新的更新进来和已有事务的提交。就这个命令主要靠MDL锁来实现，这里用到了2个MDL锁
 Closes all open tables and locks all tables for all databases with a read lock until you explicitly release the lock 
 by executing UNLOCK TABLES. 
 
