@@ -110,6 +110,19 @@ innodb_print_all_deadlocks：
 When this option is enabled, information about all deadlocks in InnoDB user transactions is recorded in the mysqld error log.
 Otherwise, you see information about only the last deadlock, using the SHOW ENGINE INNODB STATUS command. 
 
+-----------------------------------------------------------------------------------
+锁类型：
+MDL锁(Metadata Locking)（http://mysql.taobao.org/monthly/2015/11/04/）
+全局读锁FLUSH TABLES WITH READ LOCK
+表锁
+innodb三个锁：
+record lock
+gap lock
+next key lock
+
+
+
+
 -----------------------------------------------------------
 锁等待，锁排队，锁超时：
 
@@ -201,7 +214,7 @@ SQL线程执行到Xid event，准备提交事务，请求 COMMIT 锁，被备份
 
 -----------------------------------------------------------------------------------------------------
 相关参数
-innodb_lock_wait_timeout
+innodb_lock_wait_timeout  innodb锁超时
 
 ---------------------------------------------------------------------------------------------------------
 逻辑概念：
