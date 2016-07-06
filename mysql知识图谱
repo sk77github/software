@@ -120,10 +120,14 @@ requested_lock_id 请求锁的锁ID
 blocking_trx_id 当前拥有锁的事务ID
 blocking_lock_id 当前拥有锁的锁ID
 
-information_schema库的innodb表
+information_schema库的四个表
 INNODB_TRX
 INNODB_LOCKS
-INNODB_LOCK_WAITS	显示事务、事务持有/等待的锁。对于诊断锁等待、长事务很重要。
+INNODB_LOCK_WAITS	
+processlist显示事务、事务持有/等待的锁。对于诊断锁等待、长事务很重要。
+
+
+Innodb行锁等待超时参数 innodb_lock_wait_timeout
 
 -------------------------------------------------------------------------------------------------------
 加锁语句：
@@ -166,8 +170,24 @@ by executing UNLOCK TABLES.
 2，close open tables - this step will block until all statements started previously have stopped
 3，set a flag to block commits
 
+备份时的作用：
+FTWRL的3个步骤：
+1. 上全局读锁
+2. 清理表缓存
+3. 上全局COMMIT锁
+第一步的作用是堵塞更新，备份时，我们期望获取此时数据库的一致状态，不希望有更多的更新操作进来。对于innodb引擎而言，其自身的MVCC机制，
+可以保证读到老版本数据，因此第一步对它使多余的。
+第二步，清理表缓存，这个操作对于myisam有意义，关闭myisam表时，会强制要求表的缓存落盘，这对于物理备份myisam表是有意义的，
+因为物理备份是直接拷贝物理文件。对于innodb表，则无需这样，因为innodb有自己的redolog，只要记录当时LSN，然后备份LSN以后的redolog即可。
+第三步，主要是保证能获取一致性的binlog位点，这点对于myisam和innodb作用是一样的。
+
 小技巧：
 在手动做FLUSH TABLES WITH READ LOCK/set global read_only=1之前，先执行一下FLUSH TABLES，能够很大概率地减小系统变成只读的时间
+
+其他：
+“set global read_only=1”这个命令实际上也和FTWRL类似，也需要上两把MDL，只是不需要清理表缓存而已。如果老主库上还有大的更新事务，
+将导致set global read_only hang住，设置失败。因此切换程序在设计时，要考虑这一点。
+
 
 疑问：
 因为FTWRL是要flush脏页的，只有这样才真的能保证数据一致性(比如说在xtrabackup备份myisam表的时候)，而在select count(*) from tb执行的时候，
