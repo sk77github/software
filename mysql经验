@@ -361,12 +361,19 @@ online ddl
 那么事情的关键点就在于为什么会有突然的并发了
 
 慢sql的危害：
+慢sql无论在上线前和上线后，都是一定要干掉的。
 锁等待会拖慢整个整个系统。
+锁等待会拖慢备份。（备份在低峰做）
 
 
 松散索引扫描：
 mysql目前 5.6版本，还不能很好的支持松散索引扫描。所以，两个技巧，一是尽量把范围查询放索引的最后面。二，利用in将范围查询转化成in查询
 -----------------------------------------------------------------------------------------------------------------------
+
+隐式提交与显式提交，隐式加锁与显式加锁：
+
+
+-------------------------------------------------------------------------------------------------------------------------
 json数据类型：
 使用虚拟列构建json里面key的索引，A secondary index may be created on one or more virtual columns or on a combination of
 virtual columns and non-generated virtual columns. Secondary indexes on virtual columns may be defined as UNIQUE.
