@@ -110,7 +110,8 @@ innodb_print_all_deadlocks：
 When this option is enabled, information about all deadlocks in InnoDB user transactions is recorded in the mysqld error log.
 Otherwise, you see information about only the last deadlock, using the SHOW ENGINE INNODB STATUS command. 
 
-锁等待：
+-----------------------------------------------------------
+锁等待，锁排队，锁超时：
 
 information_schema库的innodb_lock_waits表	
 锁等待的对应关系，字段说明：
@@ -168,6 +169,9 @@ by executing UNLOCK TABLES.
 小技巧：
 在手动做FLUSH TABLES WITH READ LOCK/set global read_only=1之前，先执行一下FLUSH TABLES，能够很大概率地减小系统变成只读的时间
 
+疑问：
+因为FTWRL是要flush脏页的，只有这样才真的能保证数据一致性(比如说在xtrabackup备份myisam表的时候)，而在select count(*) from tb执行的时候，
+因为所有的操作都是在内存中操作，所以此时还不能完全flush，因此FTWRL就得等待。（是这样吗？就是刷新表的那一步？）
 
 
 -----------------------------------------------------------------------------------------------------
