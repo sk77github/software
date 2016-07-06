@@ -110,7 +110,19 @@ innodb_print_all_deadlocks：
 When this option is enabled, information about all deadlocks in InnoDB user transactions is recorded in the mysqld error log.
 Otherwise, you see information about only the last deadlock, using the SHOW ENGINE INNODB STATUS command. 
 
+锁等待：
 
+information_schema库的innodb_lock_waits表	
+锁等待的对应关系，字段说明：
+requesting_trx_id 请求锁的事务ID
+requested_lock_id 请求锁的锁ID
+blocking_trx_id 当前拥有锁的事务ID
+blocking_lock_id 当前拥有锁的锁ID
+
+information_schema库的innodb表
+INNODB_TRX
+INNODB_LOCKS
+INNODB_LOCK_WAITS	显示事务、事务持有/等待的锁。对于诊断锁等待、长事务很重要。
 
 -------------------------------------------------------------------------------------------------------
 加锁语句：
@@ -140,7 +152,21 @@ UNLOCK TABLES;
 LOCK TABLES ... WRITE 表写锁
 LOCK TABLES ... READ  表读锁
 
-FLUSH TABLES WITH READ LOCK(UNLOCK TABLES 配合使用）
+---------------------------------------------------
+加全局读锁（xtrabackup备份时，copy完ibd文件会使用），
+FLUSH TABLES WITH READ LOCK(UNLOCK TABLES 配合使用）：FLUSH TABLES WITH READ LOCK后一定要UNLOCK TABLES，除非你想让系统只读！
+
+作用：
+Closes all open tables and locks all tables for all databases with a read lock until you explicitly release the lock 
+by executing UNLOCK TABLES. 
+
+实现过程：
+1，set the global read lock - after this step, insert/update/delete/replace/alter statements cannot run
+2，close open tables - this step will block until all statements started previously have stopped
+3，set a flag to block commits
+
+小技巧：
+在手动做FLUSH TABLES WITH READ LOCK/set global read_only=1之前，先执行一下FLUSH TABLES，能够很大概率地减小系统变成只读的时间
 
 
 
