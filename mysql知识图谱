@@ -138,7 +138,9 @@ INNODB_LOCK_WAITS
 processlist显示事务、事务持有/等待的锁。对于诊断锁等待、长事务很重要。
 
 
-Innodb行锁等待超时参数 innodb_lock_wait_timeout
+Innodb锁等待超时参数 innodb_lock_wait_timeout:
+The length of time in seconds an InnoDB transaction waits for a row lock before giving up.
+innodb_lock_wait_timeout applies to InnoDB row locks only.
 
 -------------------------------------------------------------------------------------------------------
 加锁语句：
