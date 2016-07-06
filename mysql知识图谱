@@ -181,6 +181,11 @@ FTWRL的3个步骤：
 因为物理备份是直接拷贝物理文件。对于innodb表，则无需这样，因为innodb有自己的redolog，只要记录当时LSN，然后备份LSN以后的redolog即可。
 第三步，主要是保证能获取一致性的binlog位点，这点对于myisam和innodb作用是一样的。
 
+FTWRL备份时除了有锁等待造成其他线程饿死的情况，确实还有造成死锁的情况，如下：
+备份线程执行 FTWRL，拿到 COMMIT 锁；
+SQL线程执行到Xid event，准备提交事务，请求 COMMIT 锁，被备份线程阻塞；
+备份线程为了获取 slave 执行位点，执行 show slave status，需要获取 rli->data_lock，被 SQL 线程阻塞。
+
 小技巧：
 在手动做FLUSH TABLES WITH READ LOCK/set global read_only=1之前，先执行一下FLUSH TABLES，能够很大概率地减小系统变成只读的时间
 
