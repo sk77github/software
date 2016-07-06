@@ -112,13 +112,11 @@ Otherwise, you see information about only the last deadlock, using the SHOW ENGI
 
 -----------------------------------------------------------------------------------
 锁类型：
-MDL锁(Metadata Locking)（http://mysql.taobao.org/monthly/2015/11/04/）
-全局读锁FLUSH TABLES WITH READ LOCK
-表锁
-innodb三个锁：
-record lock
-gap lock
-next key lock
+MDL锁(Metadata Locking)在table cache缓存里实现的，为DDL提供隔离操作。一种特别的meta-data元数据类型，叫Name Lock。（SQL层）（http://mysql.taobao.org/monthly/2015/11/04/）
+全局读锁FLUSH TABLES WITH READ LOCK（SQL层）
+表级table-level数据锁（SQL层）
+innodb存储引擎特有机制 — row locks行锁，gap lock，next key lock ，page locks页锁，table locks表级（这是啥？），版本控制（在引擎中实现）
+
 
 
 
