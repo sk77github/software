@@ -1,5 +1,9 @@
 mysqldump：
 
+在使用mysqldump获取一致性备份时，我们经常会使用两个参数，--single-transaction和--master-data，前者保证innodb表的数据一致性，
+后者保证获取与数据备份匹配的一致性位点，主要用于搭建复制。现在使用mysql主备集群基本是标配，所以也是必需的。
+对于myisam，就需要通过--lock-all-tables参数和--master-data来达到同样的目的。
+
 --single-transaction
 快照读，基于RR隔离级别显示开启事务然后select，dump的是开启事务也就是备份开始时的那个时间点的快照（使用mvcc，读undo log里的版本）
 dump时其他连接不可以使用这些命令： ALTER TABLE, CREATE TABLE, DROP TABLE, RENAME TABLE, TRUNCATE TABLE. 
@@ -8,6 +12,10 @@ To dump large tables, combine the --single-transaction option with the --quick o
 --master-data
  It causes the dump output to include a CHANGE MASTER TO statement that indicates the binary log coordinates (file name and position) 
  of the dumped server. 
+ 
+ 官方版本的5.5和5.6对于mysqldump做了一个优化，主要改动是，5.5备份一个表，锁一个表，备份下一个表时，再上锁一个表，
+ 已经备份完的表锁不释放，这样持续进行，直到备份完成才统一释放锁。5.6则是备份完一个表，就释放一个锁，实现主要是通过innodb的保存点机制。
+ 相关的bug可以参考链接：http://bugs.mysql.com/bug.php?id=71017。
 
 
 
