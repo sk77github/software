@@ -37,7 +37,8 @@ select * from table where ? for update;(sets an IX lock)
 rc事务隔离级别下，对于快照数据，非一致性读总是读取被锁定行的最新一份快照数据.（因为read commited嘛，但不可重复读）
 RR事务隔离级别下，对于快照数据，非一致性读总是读取事务开始时的行数据版本。
 
-注意：快照读只适用于SELECT语句，不适用与DML语句（DML语句是当前读），所以事务中的DML语句（当前读）是可以看到其他session中的事务的更新的，即时SELECT并不能看到这些
+注意：快照读只适用于SELECT语句，不适用与DML语句（DML语句是当前读），所以事务中的DML语句（当前读）是可以看到其他session中的事务的更新的，
+即时SELECT并不能看到这些
 
 
 快照读：就是select
@@ -105,6 +106,16 @@ S	  Conflict	Conflict	  Compatible	Compatible
 IS	Conflict	Compatible	Compatible	Compatible
 
 
+static const byte lock_compatibility_matrix[5][5] = {
+/** IS IX S X AI /
+/ IS / { TRUE, TRUE, TRUE, FALSE, TRUE},
+/ IX / { TRUE, TRUE, FALSE, FALSE, TRUE},
+/ S / { TRUE, FALSE, TRUE, FALSE, FALSE},
+/ X / { FALSE, FALSE, FALSE, FALSE, FALSE},
+/ AI / { TRUE, TRUE, FALSE, FALSE, FALSE}
+};
+
+
 死锁：
 innodb_print_all_deadlocks：
 When this option is enabled, information about all deadlocks in InnoDB user transactions is recorded in the mysqld error log.
@@ -112,10 +123,14 @@ Otherwise, you see information about only the last deadlock, using the SHOW ENGI
 
 -----------------------------------------------------------------------------------
 锁类型：
-MDL锁(Metadata Locking)在table cache缓存里实现的，为DDL提供隔离操作。一种特别的meta-data元数据类型，叫Name Lock。（SQL层）（http://mysql.taobao.org/monthly/2015/11/04/）
+MDL锁(Metadata Locking)在table cache缓存里实现的，为DDL提供隔离操作。一种特别的meta-data元数据类型，叫Name Lock。（SQL层）
 全局读锁FLUSH TABLES WITH READ LOCK（SQL层）
 表级table-level数据锁（SQL层）
 innodb存储引擎特有机制 — row locks行锁，gap lock，next key lock ，page locks页锁，table locks表级（这是啥？），版本控制（在引擎中实现）
+
+InnoDB的表级别锁包含五种锁模式：LOCK_IS、LOCK_IX、LOCK_X、LOCK_S以及LOCK_AUTO_INC锁.
+InnoDB表级锁的目的是为了防止DDL和DML的并发问题。但从5.5版本开始引入MDL锁后，InnoDB层的表级锁的意义就没那么大了，
+MDL锁本身已经覆盖了其大部分功能。
 
 
 
@@ -356,7 +371,9 @@ http://www.cnblogs.com/chenpingzhao/p/5003881.html
 
 引擎层提交了，但binlog没写入，备库丢事务；
 引擎层没有prepare，但binlog写入了，主库丢事务。
-即使我们将参数设置成innodb_flush_log_at_trx_commit =1 和 sync_binlog = 1，也还会面临这样一种情况：主库crash时还有binlog没传递到备库，如果我们直接提升备库为主库，同样会导致主备不一致，老主库必须根据新主库重做，才能恢复到一致的状态。针对这种场景，我们可以通过开启semisync的方式来解决，一种可行的方案描述如下：
+即使我们将参数设置成innodb_flush_log_at_trx_commit =1 和 sync_binlog = 1，也还会面临这样一种情况：主库crash时还有binlog没传递到备库，
+如果我们直接提升备库为主库，同样会导致主备不一致，老主库必须根据新主库重做，才能恢复到一致的状态。
+针对这种场景，我们可以通过开启semisync的方式来解决，一种可行的方案描述如下：
 
 设置双1强持久化配置;
 我们将semisync的超时时间设到极大值，同时使用semisync AFTER_SYNC模式，即用户线程在写入binlog后，引擎层提交前等待备库ACK；
