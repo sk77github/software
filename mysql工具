@@ -45,7 +45,6 @@ mk-slave-prefetch
 
 ----------------------------------------------------------------------------------------------------
 percona的工具集
-pt-query-digest
 pt-kill
 
 安装：
@@ -66,14 +65,50 @@ wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolki
  
  ------------------------------------------------------------------------------------------------------------------------
  运维类：
+ 0.
+ pt-kill
+从show processlist 中获取满足条件的连接或者从包含show processlist的文件中读取满足条件的连接并打印或者杀掉或者执行其他操作，
+
+每隔10s 杀掉处于sleep状态的连接数；
+pt-kill --defaults-file xx --match-command Sleep --kill --victims all --interval 10 
+每隔10s 杀掉处初步runnning状态超过60s的连接数；
+pt-kill defaults-file xx --busy-time 60 --kill --victims all --interval 10 
+
+几个重要参数
+--daemonize  放在后台以守护进程的形式运行；
+--interval  多久运行一次，单位可以是s,m,h，d等默认是s
+--victims 默认是oldest,只杀最古老的查询。这是防止被查杀是不是真的长时间运行的查询，他们只是长期等待。这种种匹配按时间查询，
+杀死一个时间最高值。
  
- pt-table-checksum:
+ 
+ 1,pt-table-checksum:
  检查主从一致性
  pt-table-checksum --nocheck-replication-filters --chunk-size=1000000 --no-check-binlog-format --replicate=sps.checksums 
  --databases=xxx h=127.0.0.1,u=root,p=123456,P=3306  
  
  
-pt-online-schema-change：
+pt-table-sync
+高效同步 mysql 表的数据，与pt-table-checksum 结合使用
+pt-table-sync [OPTION...] DSN [DSN...]
+原理：总是在主上执行数据的更改，再同步到从上，不会直接更改成从的数据，在主上执行更改是基于主上现在的数据，不会更改主上的数据。
+注意使用之前先备份你的数据，避免造成数据的丢失.执行execute 之前最好先换成–print 或–dry-run 查看一下会变更哪些数据。
+
+范例 1：同步192.168.3.135 的test 库的 aaa 表到 192.168.3.92，在执行之前可以用–execute 参数换成–print 来查看会变更什么东西，
+后面那个主机必须是master，否则会报错推出。
+pt-table-sync --execute --user=root --password=hugnew h=192.168.3.135,D=test,t=aaa h=192.168.3.92
+
+范例 2： 将主的 test 数据库同步到192.168.3.92，使从上具有一样的数据。
+pt-table-sync --execute --sync-to-master --user=root --password=hugnew h=192.168.3.92 --database test
+范例 3：只同步指定的表
+pt-table-sync --execute --sync-to-master --user=root --password=hugnew h=192.168.3.92 D=test,t=aaa
+范例 4：根据 pt-table-checksum 的结果进行数据同步
+pt-table-sync --execute --replicate test.checksums --user=root --password=hugnew h=192.168.3.135
+范例 5： 根据 pt-table-checksum 使从的数据和主的数据一致
+pt-table-sync --execute --replicate test.checksums --user=root --password=hugnew --sync-to-master h=192.168.3.92 D=test,t=aaa
+ 
+ 
+ 
+2,pt-online-schema-change：
 在线更改表结构，不锁表
 使用风险：
 一定要阅读了工具的文档，知道工具的原理，限制，工具的工作过程
@@ -98,9 +133,30 @@ pt-online-schema-change --user=root --password=hugnew --host=localhost
                         --lock-wait-time=120 --alter="ADD COLUMN domain_id INT" D=test,t=oss_pvinfo2 --execute
  
  
- 
+3, pt-slave-find
+查找和打印 mysql 所有从服务器复制层级关系
+pt-slave-find [OPTION...] MASTER-HOST
+原理:连接 mysql 主服务器并查找其所有的从，然后打印出所有从服务器的层级关系。
+
+范例 1：查找主服务器为 192.168.3.135的mysql有所有从的层级关系：
+pt-slave-find --user=root --password=hugnew --host=192.168.3.13
+
  --------------------------------------------------------------------------------------------------------------------
- 监控类：
+监控类：
+ 
+1,pt-deadlock-logger
+提取和记录 mysql 死锁的相关信息
+pt-deadlock-logger [OPTION...] SOURCE_DSN
+收集和保存 mysql 上最近的死锁信息，可以直接打印死锁信息和存储死锁信息到数据库中死锁信息包括发生死锁的服务器、
+最近发生死锁的时间、死锁线程id、死锁的事务 id、发生死锁时事务执行了多长时间等等非常多的信息。详情见下面的示例。
+
+范例 1： 打印本地 mysql 的死锁信息
+pt-deadlock-logger --user=root --password=hugnew h=localhost –print
+范例 2：将本地的 mysql 死锁信息记录到数据库的表中，也打印出来
+pt-deadlock-logger --user=root --password=hugnew h=localhost --print D=test,t=deadlocks
+
+
+2,pt-query-digest
  
  ----------------------------------------------------------------------------------------------------------------------
  性能优化类：
