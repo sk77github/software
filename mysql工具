@@ -45,7 +45,6 @@ mk-slave-prefetch
 
 ----------------------------------------------------------------------------------------------------
 percona的工具集
-pt-kill
 
 安装：
 wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolkit-2.2.14-1.noarch.rpm
@@ -73,6 +72,52 @@ wget https://www.percona.com/downloads/percona-toolkit/2.2.14/RPM/percona-toolki
 pt-kill --defaults-file xx --match-command Sleep --kill --victims all --interval 10 
 每隔10s 杀掉处初步runnning状态超过60s的连接数；
 pt-kill defaults-file xx --busy-time 60 --kill --victims all --interval 10 
+
+1. 按user kill
+/usr/bin/pt-kill --busy-time 15   --match-user="dbUSER1 | dbUSER2,..." --victim all --interval 1 --kill --daemonize 
+--pid=/tmp/ptkill.pid --print --log=/home/pt-kill.log  
+注：测试通过按用户来杀线程，注意--match-user多个用户之间用 | 分隔。 
+
+2. 按query来源 host kill
+/usr/bin/pt-kill --busy-time 15   --match-host="192.168.10.10 | 192.168.10.11" --victim all --interval 1 --kill --daemonize 
+--pid=/tmp/ptkill.pid --print --log=/home/pt-kill.log
+--ignore-host    / --match-host
+  注：测试通过按来源host来杀线程，注意--match-host多个host之间用 | 分隔。 
+
+3. 按command kill
+/usr/bin/pt-kill --busy-time 15   --match-command="query | Execute" --victim all --interval 1 --kill --daemonize 
+--pid=/tmp/ptkill.pid --print --log=/home/pt-kill.log
+/usr/bin/pt-kill --busy-time 15   --ignore-command="sleep | binlogdump" --victim all --interval 1 --kill --daemonize 
+--pid=/tmp/ptkill.pid --print --log=/home/pt-kill.log
+注：测试通过按command来杀掉线程，注意command的内容一定要严格匹配大小写，否则会杀不掉。 注意--match-command多个command之间用 | 分隔，
+否则会失效。
+（command有：Query、Sleep、Binlog Dump、Connect、Delayed insert、Execute、Fetch、Init DB、Kill、Prepare、Processlist、Quit、
+Reset stmt、Table Dump）
+
+4. 按state kill
+/usr/bin/pt-kill --busy-time 15 --match-state="Locked | Sending data" --victim all --interval 1 --kill --daemonize 
+--pid=/tmp/ptkill.pid --print --log=/home/pt-kill.log
+注：测试通过按state 来杀掉线程，注意state 的内容一定要严格匹配大小写，否则会杀不掉。注意--match-state多个state之间用 | 分隔，否则会失效。
+（state类型有：Locked、login、copy to tmp table、Copying to tmp table、Copying to tmp table on disk、Creating tmp table、executing、
+Reading from net、Sending data、Sorting for order、Sorting result、Table lock、Updating）
+
+5. 按info关键字 kill
+/usr/bin/pt-kill --busy-time 15 --match-info="SELECT | DELETE" --victim all --interval 1 --kill --daemonize 
+--pid=/tmp/ptkill.pid --print --log=/home/pt-kill.log
+注：测试通过按info来杀掉线程，注意info的内容一定要严格匹配大小写，否则会杀不掉。注意--match-info多个info之间用 | 分隔，否则会失效。
+--ignore-info    / --match-info
+（info可以使用select、update、insert、delete来进行匹配，并可使用"|"进行多项匹配，如"select|SELECT|delete|DELETE|update|UPDATE"
+
+6. 按访问的dbname kill
+/usr/bin/pt-kill --busy-time 15 --match-db="db1 | db2"  --victim all --interval 1 --kill --daemonize 
+--pid=/tmp/ptkill.pid --print --log=/home/pt-kill.log
+ --ignore-db  / --match-db
+注：测试通过按db来杀掉线程，注意db的内容一定要严格匹配大小写，否则会杀不掉。注意--match-db多个db之间用 | 分隔，否则会失效。
+
+
+另： Action：
+--kill                      杀掉连接并且退出
+--kill-query           只杀掉连接执行的语句，但是线程不会被终止
 
 几个重要参数
 --daemonize  放在后台以守护进程的形式运行；
