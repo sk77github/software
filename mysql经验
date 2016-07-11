@@ -229,6 +229,12 @@ master_info_repository         = TABLE
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 多源复制：
+Multi-source replication can be used to 
+back up multiple servers to a single server, 
+to merge table shards, 
+consolidate data from multiple servers to a single server. 
+Multi-source replication does not implement any conflict detection or resolution when applying the transactions, 
+and those tasks are left to the application if required. 
 
 命令使用：
 FOR CHANNEL channel_name option for use with the following in managing a replication channel independently of other channels:
