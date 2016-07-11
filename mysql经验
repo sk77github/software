@@ -286,6 +286,9 @@ The following startup options now affect all channels in a replication topology.
 --skip-slave-start
 --slave-skip-errors
 
+搭建过程：
+http://www.cnblogs.com/xuanzhi201111/p/5151666.html
+
 ---------------------------------------------------
 状态监控：
 
