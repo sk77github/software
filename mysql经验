@@ -116,6 +116,8 @@ enforce-gtid-consistency=ON
 加从库权限
 GRANT RELOAD, SUPER, REPLICATION SLAVE ON *.* TO 'rep'@'10.3.19.166' IDENTIFIED BY  '';
 CHANGE MASTER TO MASTER_HOST = host,MASTER_PORT = port,MASTER_USER = user,MASTER_PASSWORD = password,MASTER_AUTO_POSITION = 1;
+（If MASTER_AUTO_POSITION = 1 is used with CHANGE MASTER TO, the slave attempts to connect to the master 
+using the GTID-based replication protocol. ）
 6，
 START SLAVE;
 7，
@@ -225,8 +227,73 @@ master_info_repository         = TABLE
 
 
 
-
+-----------------------------------------------------------------------------------------------------------------------------------------
 多源复制：
+
+命令使用：
+FOR CHANNEL channel_name option for use with the following in managing a replication channel independently of other channels:
+
+CHANGE MASTER TO：
+to add a new master with the host name master1 using port 3451 to a channel called master-1:
+CHANGE MASTER TO MASTER_HOST='master1', MASTER_USER='rpl', MASTER_PORT=3451, MASTER_PASSWORD='', \
+MASTER_AUTO_POSITION = 1 FOR CHANNEL 'master-1';
+
+START SLAVE：
+START SLAVE thread_types;
+START SLAVE thread_types FOR CHANNEL channel;
+
+STOP SLAVE：
+STOP SLAVE thread_types;
+STOP SLAVE thread_types FOR CHANNEL channel;
+
+RESET SLAVE：
+RESET SLAVE;
+RESET SLAVE FOR CHANNEL channel;
+
+SHOW RELAYLOG EVENTS
+FLUSH RELAY LOGS
+SHOW SLAVE STATUS
+
+
+
+
+SHOW RELAYLOG EVENTS
+CHANGE MASTER TO
+MASTER_POS_WAIT()
+WAIT_UNTIL_SQL_THREAD_AFTER_GTIDS()
+WAIT_FOR_EXECUTED_GTID_SET()
+这五个，必须指定FOR CHANNEL channel_name option
+
+Similarly, an additional channel_name parameter is introduced for the following functions:
+MASTER_POS_WAIT()
+WAIT_UNTIL_SQL_THREAD_AFTER_GTIDS()
+
+Beginning with MySQL 5.7.9, the following statements are disallowed for the group_replication_recovery channel.
+START SLAVE
+STOP SLAVE
+---------------------------------------------------
+配置及参数：
+
+--relay-log-info-repository
+This must be set to TABLE. 
+--master-info-repository
+This must be set to TABLE.
+
+The following startup options now affect all channels in a replication topology.
+--log-slave-updates
+--relay-log-purge
+--slave_transaction_retries
+--skip-slave-start
+--slave-skip-errors
+
+---------------------------------------------------
+状态监控：
+
+ SHOW SLAVE STATUS （FOR CHANNEL channel_name）
+
+use the replication Performance Schema tables to monitor channels：
+SELECT * FROM replication_connection_status\G;
+SELECT * FROM replication_connection_status WHERE channel_name='master1'\G
 
 
 
