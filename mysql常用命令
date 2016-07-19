@@ -118,12 +118,12 @@ ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息';
   `poi_name` varchar(100) DEFAULT NULL,
   `poi_longitude` double DEFAULT NULL,
   `private_level` tinyint(4) DEFAULT NULL,
-  time timestamp not null default current_timestamp on update current_timestamp,
+  create_time timestamp not null default current_timestamp on update current_timestamp,
   `first_login` datetime DEFAULT NULL,
   PRIMARY KEY (`source_type`,`user_id`),
   UNIQUE KEY (grade),
   KEY `idx_source_type_login_name` (`source_type`,`login_name`(255))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息' 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户信息'; 
 
 alter样例：
 
