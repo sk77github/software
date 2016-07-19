@@ -184,16 +184,31 @@ mysqld_multi  --no-log  stop 3308 --password=
 取得  正在运行的端口号 ：
 ps aux| grep mysql | grep -o "\-\-port=[0-9]\+" | grep -o "[0-9]\+"
 
+----------------------------------------------------------------------------------------------------------------------
+数据导入导出：
+
+导出
+SELECT * INTO OUTFILE '/tmp/fi.txt' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '\n' FROM test.fi;
+        导出形如：
+        "2013-04-09 00:06:56","100000198108800","EXPORT_INFO","BUY_ITEM_INNER",65,10,1004,10,"11","2",100
+        "2013-04-09 00:06:59","1068029027","EXPORT_INFO","BUY_ITEM_INNER",16,7,304,7,"11","2",70
+        "2013-04-09 00:08:27","100000198108800","EXPORT_INFO","BUY_ITEM_INNER",65,2,1004,2,"11","2",20
+-- 导入
+LOAD DATA INFILE '/tmp/fi.txt' INTO TABLE test.fii FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"' LINES TERMINATED BY '\n';
+总结：
+FIELDS TERMINATED BY ',' 字段间分割符
+OPTIONALLY ENCLOSED BY '"' 将字段包围 对数值型无效
+LINES TERMINATED BY '\n' 换行符
+
 load data infile
 mysql> load data infile '/tmp/huodong_card.txt' into table huodong_card(card_num,card_code);
 load data infile '/tmp/huodong_comix.txt' into table huodong_comix
 (name  , mobile  ,email, profession ,corporation , speech ,vote ,tinypicUrl, user_id );  
-
 select into outfile
 select name,mobile,email,profession,corporation,speech,vote,tinypicUrl,picUrl,user_id from huodong_comix 
 into outfile '/tmp/huodong_comix.txt';
 
-
+---------------------------------------------------------------------------------------------------------------------------
 mysqladmin
 mysqladmin shutdown  --socket=/data/xuwu/tmp/mysql_slave.sock（关mysql）
 mysqladmin extended-status -i 1 -r -uroot -p | grep -e "Com_select"（查找目前qps）  
