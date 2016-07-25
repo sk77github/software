@@ -24,9 +24,27 @@ qps（iops，tps）
 
 
 ---------------------------------------------------------------------------------------------------------------------
+最佳实践：
 单表数据量建议控制在5000w条以内。
 
 
+
+边界限制：
+varchar(20)，指的是20字符，无论存放的是数字、字母还是UTF8汉字（每个汉字3字节），都可以存放20个，最大大小是65532字节  
+字符类型若为gbk，每个字符最多占2个字节，最大长度不能超过32766; 
+字符类型若为utf8，每个字符最多占3个字节，最大长度不能超过21845。 
+若定义的时候超过上述限制，则varchar字段会被强行转为text类型，并产生warning。
+MySQL要求一个行的定义长度不能超过65535。若定义的表长度超过这个值，则提示 ERROR 1118 (42000): Row size too large. The maximum row size
+for the used table type, not counting BLOBs, is 65535. You have to change some columns to TEXT or BLOBs。 
+
+innodb的聚集索引（cluster index）仅仅存储varchar、text、blob字段的前768个字节，多余的字节存储在一个独立的overflow page中，
+这个列也被称作off-page。768个字节前缀后面紧跟着20字节指针，指向overflow pages的位置。 
+
+另外，在innodb_file_format=Antelope情况下，InnoDB中最多能存储10个大字段（需要使用off-page存储）。innodbd的默认page size为16KB，
+InnoDB单行的长度不能超过16k/2=8k个字节，（768+20）*10 < 8k。 
+
+the maximum row length is about 8000 bytes for the default 16KB innodb_page_size setting. 
+LONGBLOB and LONGTEXT columns must be less than 4GB, and the total row length, including BLOB and TEXT columns, must be less than 4GB.
 ---------------------------------------------------------------------------------------------------------------------
 其他数据：
 
