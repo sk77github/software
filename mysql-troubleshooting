@@ -163,3 +163,15 @@ ERROR 2002: Can't connect to local MySQL server through socket
 '/tmp/mysql.sock' (111)
 可能是mysqld根本没起来
 
+
+-----------------------------------------------------------------------------------------------------
+数据导入与编码
+
+不要用source命令，没有error输出，要用mysql这个客户端工具
+编码相关设置：
+[client]
+default-character-set = utf8 
+[mysql]
+default-character-set = utf8
+[mysqld]
+character_set_server=utf8
