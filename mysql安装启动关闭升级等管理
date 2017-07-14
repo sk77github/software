@@ -1,3 +1,6 @@
+
+
+重点####
 在做环境前，检查你所有会涉及到的环境（清理清楚外部依赖），比如/etc下可能有默认的my.cnf
 
 
@@ -172,3 +175,24 @@ pt-upgrade
 bin/mysqld_safe --defaults-file=/usr/local/mysql/support-files/my-default.cnf  --user=mysql &
 关闭：
 mysqladmin shutdown
+
+
+------------------------------------------------------------------------------------------------------------
+5.6安装
+
+https://dev.mysql.com/get/Downloads/MySQL-5.6/mysql-5.6.36-linux-glibc2.5-x86_64.tar.gz
+安装脚本：
+vim install_mysql_56.sh 
+groupadd mysql
+ useradd -r -g mysql -s /bin/false mysql
+ tar zxvf mysql-5.6.36-linux-glibc2.5-x86_64.tar.gz
+ ln -s mysql-5.6.36-linux-glibc2.5-x86_64 mysql
+ cd mysql
+ chown -R mysql .
+ chgrp -R mysql .
+ scripts/mysql_install_db --user=mysql
+ chown -R root .
+ chown -R mysql data
+ bin/mysqld_safe --user=mysql &
+ cp support-files/mysql.server /etc/init.d/mysql.server
+ vim install_mysql_56.sh  end
