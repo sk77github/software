@@ -93,6 +93,7 @@ bin/mysqld_safe --user=mysql &
 cp support-files/mysql.server /etc/init.d/mysql.server
 chkconfig --add mysql.server
 cp bin/mysql /usr/bin
+cp bin/mysqladmin /usr/bin   
 cp /data/mysql/bin/mysqld_safe /usr/bin
 cp mysqld /usr/bin
 cp /usr/local/mysql/base/bin/my_print_defaults /usr/bin
