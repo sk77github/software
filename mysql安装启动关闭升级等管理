@@ -71,16 +71,30 @@ chgrp -R mysql .
 mv my.cnf /etc
 (修改/etc/my.cnf配置，这里也要用脚本写入,配置的合理度，直接关系到运维的复杂度，相应的表的规范度，直接关系到运维的复杂度（比如表必须有
 主键，没有主键从库删除，更新就会很慢等很多问题）
-basedir = /data/mysql
-datadir = /data/mysql/data
+[client]
+default-character-set = utf8
+
+[mysql]
+default-character-set = utf8
+
+[mysqld]
+basedir = /mydata/mysql
+datadir=/mydata/mysql/data
+socket=/var/lib/mysql/mysql.sock
+
 port = 3306
-server_id = 1812
-log-bin  
+server_id = 14315
+log-bin
 log-slave-updates=ON
 gtid_mode=ON
 enforce-gtid-consistency=ON
 skip-slave-start
 skip-name-resolve
+
+character_set_server=utf8
+
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
 )
 
 scripts/mysql_install_db --user=mysql(如果/etc/ 下有老的my.cnf 这里需要注意)
