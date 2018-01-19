@@ -58,3 +58,12 @@ and /var/log/mongodb directories to give this user access to these directories.
 
 使用service方式管理
 service mongod start   
+
+
+-----------------------------------------------------------------------------
+使用：
+理解object id  不是一个字符串
+
+MongoDB stores data in bson format，bson strings are utf-8 encodeed
+
+mongodb is schema-free
