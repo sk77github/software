@@ -1,3 +1,17 @@
+数据处理：
+
+对于完全重复记录的删除
+对于表中两行记录完全一样的情况，可以用下面语句获取到去掉重复数据后的记录：
+select distinct * from 表名
+可以将查询的记录放到临时表中，然后再将原来的表记录删除，最后将临时表的数据导回原来的表中。如下：
+CREATE TABLE 临时表 AS (select distinct * from 表名);
+drop table 正式表;
+insert into 正式表 (select * from 临时表);
+drop table 临时表;
+
+
+
+
 权限相关：
 
 
