@@ -40,6 +40,7 @@ reset命令：
 在从上：
 1，STOP SLAVE（必须前置）
 2，RESET SLAVE
+
 在主上：
 1，RESET MASTER
 如果此时从设置了 Auto_Position = 1 且是gtid复制，则在从上还需要：
@@ -85,7 +86,10 @@ show global variables like %""%;
 
 mysql授权：
 mysql> GRANT SELECT, INSERT , UPDATE , DELETE,CREATE , DROP , INDEX , ALTER , CREATE TEMPORARY TABLES ON
-sxw.* TO 'sxwphper'@'localhost' IDENTIFIED BY '';     
+sxw.* TO 'sxwphper'@'localhost' IDENTIFIED BY '';  
+
+grant不需要flush privileges
+额额额额额额额直接改权限表（如mysql库下的user表）需要flush
 mysql> flush privileges;
 设置密码：
 SET PASSWORD FOR 'abe'@'host_name' = PASSWORD('eagle'); （或者update mysql库user表,记得执行 FLUSH PRIVILEGES)
