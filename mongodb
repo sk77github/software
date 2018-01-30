@@ -1,3 +1,6 @@
+
+
+
 mongos:
 The mongos process is used only in sharding
 
@@ -67,3 +70,8 @@ service mongod start
 MongoDB stores data in bson format，bson strings are utf-8 encodeed
 
 mongodb is schema-free
+
+
+命令：
+mongo hostname/pull   -u rice -p rice  --authenticationDatabase pull
+mongo -u rice -p rice --port 27017 --authenticationDatabase pull （注意authenticationDatabase的概念）
