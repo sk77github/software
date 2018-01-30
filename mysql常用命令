@@ -89,7 +89,7 @@ mysql> GRANT SELECT, INSERT , UPDATE , DELETE,CREATE , DROP , INDEX , ALTER , CR
 sxw.* TO 'sxwphper'@'localhost' IDENTIFIED BY '';  
 
 grant不需要flush privileges
-额额额额额额额直接改权限表（如mysql库下的user表）需要flush
+额额额额额额额直接改权限表（如mysql库下的user表）需要flus
 mysql> flush privileges;
 设置密码：
 SET PASSWORD FOR 'abe'@'host_name' = PASSWORD('eagle'); （或者update mysql库user表,记得执行 FLUSH PRIVILEGES)
