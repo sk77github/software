@@ -79,5 +79,6 @@ mongo hostname/pull   -u rice -p rice  --authenticationDatabase pull
 mongo -u rice -p rice --port 27017 --authenticationDatabase pull （注意authenticationDatabase的概念）
 
 
-删除集合shenwan_industry
-db.shenwan_industry.drop()
+db.shenwan_industry.drop()               删除集合
+db.swIndustryAshare_old.find()           列集合所有文档
+db.swIndustryAshare_old.find().count()   集合中所有文档计数
