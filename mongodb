@@ -73,5 +73,11 @@ mongodb is schema-free
 
 
 命令：
+
+登录：
 mongo hostname/pull   -u rice -p rice  --authenticationDatabase pull
 mongo -u rice -p rice --port 27017 --authenticationDatabase pull （注意authenticationDatabase的概念）
+
+
+删除集合shenwan_industry
+db.shenwan_industry.drop()
