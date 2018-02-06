@@ -82,3 +82,5 @@ mongo -u rice -p rice --port 27017 --authenticationDatabase pull （注意authen
 db.shenwan_industry.drop()               删除集合
 db.swIndustryAshare_old.find()           列集合所有文档
 db.swIndustryAshare_old.find().count()   集合中所有文档计数
+
+为了方便mongodb里存时间 最好统一用字符串类型
