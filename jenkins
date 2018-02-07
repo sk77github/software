@@ -1,0 +1,12 @@
+
+run jenkins in docker:
+
+before this , you have installed docker in you machine
+1，docker run \
+  --rm \
+  -u root \
+  -p 8080:8080 \  （端口映射）
+  -v jenkins-data:/var/jenkins_home \   （Maps the /var/jenkins_home directory in the container to the Docker volume with the name jenkins-data. If this volume does not exist, then this docker run command will automatically create the volume for you.）
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v "$HOME":/home \   （Maps the $HOME directory on the host (i.e. your local) machine (usually the /Users/<your-username> directory) to the /home directory in the container.）
+  jenkinsci/blueocean
