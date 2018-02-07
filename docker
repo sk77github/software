@@ -24,3 +24,5 @@ You can see all your images with docker images whereas you can see your running 
 (and you can see all containers with docker ps -a).
 So a running instance of an image is a container.
 
+Volume就是目录或者文件，它可以绕过默认的联合文件系统，而以正常的文件或者目录的形式存在于宿主机上。
+
