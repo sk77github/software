@@ -10,3 +10,59 @@ before this , you have installed docker in you machine
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v "$HOME":/home \   （Maps the $HOME directory on the host (i.e. your local) machine (usually the /Users/<your-username> directory) to the /home directory in the container.）
   jenkinsci/blueocean
+
+
+
+
+Jenkinsfile:   for python project
+pipeline{
+    agent none
+    stages{
+        stage('Build'){
+            agent{
+                docker{
+                    image 'python:2-alpine'
+                }
+            }
+            steps{
+                sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+            }
+        }
+
+        stage('Test') {
+            agent {
+                docker {
+                    image 'qnib/pytest'
+                }
+            }
+            steps {
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+            }
+            post {
+                always {
+                    junit 'test-reports/results.xml'
+                }
+            }
+        }
+
+        stage('Deliver') {
+            agent {
+                docker {
+                    image 'cdrx/pyinstaller-linux:python2'
+                }
+            }
+            steps {
+                sh 'pyinstaller --onefile sources/add2vals.py'
+            }
+            post {
+                success {
+                    archiveArtifacts 'dist/add2vals'
+                }
+            }
+        }
+
+
+    }
+
+
+}
