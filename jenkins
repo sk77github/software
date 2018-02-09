@@ -75,3 +75,4 @@ pipeline{
 用户将代码提交到git
 Jenkins从git拉取最新代码
 读取根目录下的Jenkinsfile文件，并依次执行文件中定义的任务
+https://www.jianshu.com/p/b524b151d35f
