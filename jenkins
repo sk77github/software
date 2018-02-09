@@ -69,4 +69,9 @@ pipeline{
 
 
 
-![Alt text](https://github.com/sk77github/software/blob/master/20170922085711654.jpg)
+工作流在Jenkins中被称为pipeline，pipeline的运行行为由用户自己定义，定义的内容存放在一个Jenkinsfile文件中，并将该文件存放在git仓库的根目录，
+大致的流程如下：
+
+用户将代码提交到git
+Jenkins从git拉取最新代码
+读取根目录下的Jenkinsfile文件，并依次执行文件中定义的任务
