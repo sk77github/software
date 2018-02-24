@@ -84,6 +84,9 @@ db.shenwan_industry.drop()               删除集合
 db.swIndustryAshare_old.find()           列集合所有文档
 db.swIndustryAshare_old.find().count()   集合中所有文档计数
 
+模糊查询：
+db.collection.find({name:{$regex:/j*k/,$options:"si"}})
+
 索引：
 查看索引
 MongoDB提供了查看索引信息的方法：
