@@ -84,12 +84,23 @@ db.shenwan_industry.drop()               删除集合
 db.swIndustryAshare_old.find()           列集合所有文档
 db.swIndustryAshare_old.find().count()   集合中所有文档计数
 
+--------------------------------------------------------------------------------------------------------------------------------
+
 模糊查询：
 db.collection.find({name:{$regex:/j*k/,$options:"si"}})
 
 查询例子：
+
+or查询
 db.collection_name.find({"date" : ISODate("2016-12-28T00:00:00Z"), $or:[{"index_code":/^80/},{"index_code":/^85/}]}, {"index_code": 1})
 like sql: select index_code from collection_name where date = "2016-12-28 00:00:00" and index_code = 80 or index_code = 85;
+
+去重查询
+$group 操作符
+$加字段名 做field path
+db.collection.aggregate([{'$group' :{'_id': {"ThirdIndustryCode": '$ThirdIndustryCode', "ThirdIndustryName": "$ThirdIndustryName"}}
+}]):
+
 
 索引：
 查看索引
