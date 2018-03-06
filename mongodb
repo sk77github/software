@@ -85,11 +85,10 @@ db.swIndustryAshare_old.find()           列集合所有文档
 db.swIndustryAshare_old.find().count()   集合中所有文档计数
 
 --------------------------------------------------------------------------------------------------------------------------------
+查询例子：
 
 模糊查询：
 db.collection.find({name:{$regex:/j*k/,$options:"si"}})
-
-查询例子：
 
 or查询
 db.collection_name.find({"date" : ISODate("2016-12-28T00:00:00Z"), $or:[{"index_code":/^80/},{"index_code":/^85/}]}, {"index_code": 1})
@@ -100,6 +99,29 @@ $group 操作符
 $加字段名 做field path
 db.collection.aggregate([{'$group' :{'_id': {"ThirdIndustryCode": '$ThirdIndustryCode', "ThirdIndustryName": "$ThirdIndustryName"}}
 }]):
+
+$eq  等值查询
+$ne  不等于查询
+$lt  小于查询
+$lte 小于等于
+$gt  大于
+$gte 大于等于
+
+$in  in查询
+example：
+{ _id: 1, item: "abc", qty: 10, tags: [ "school", "clothing" ], sale: false }
+
+Then, the following update() operation will set the sale field value to true where the tags field holds an array with at least
+one element matching either "appliances" or "school".
+
+db.inventory.update(
+                     { tags: { $in: ["appliances", "school"] } },
+                     { $set: { sale:true } }
+                   )
+                   
+$nin not in 查询
+$or  or查询
+
 
 
 索引：
