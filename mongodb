@@ -140,6 +140,11 @@ EXISTS用于检查子查询是否至少会返回一行数据，该子查询实�
 db.inventory.find( { qty: { $exists: true, $nin: [ 5, 15 ] } } )
 This query will select all documents in the inventory collection where the qty field exists and its value does not equal 5 or 15.
 
+匹配字段是否是某个类型：
+$type selects the documents where the value of the field is an instance of the specified BSON type(s). Querying by data type is 
+useful when dealing with highly unstructured data where data types are not predictable.
+
+
 
 
 
