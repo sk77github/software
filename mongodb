@@ -154,6 +154,10 @@ the detail list ：https://docs.mongodb.com/manual/reference/operator/query/type
 db.swIndustryAshare_new.find( {"CancelDate" :{$not: { $type : 10 } } }, {"CancelDate": 1, "_id": 0, "ThirdIndustryName": 1} ).sort({"CancelDate": -1})
 取出CancelDate 不为空，按CancelDate排序
 
+mongo_filter = {'FirstIndustryIndxCode': index_code, 'InfoPubDate': {'$lt': date}, '$or':[{"CancelDate":{ '$type' : 10 }},{"CancelDate":{'$gt': date}}]}
+取出
+FirstIndustryIndxCode = index_code and InfoPubDate < date and CancelDate is null or CancelDate > date
+
 
 
 
