@@ -94,6 +94,9 @@ or查询
 db.collection_name.find({"date" : ISODate("2016-12-28T00:00:00Z"), $or:[{"index_code":/^80/},{"index_code":/^85/}]}, {"index_code": 1})
 like sql: select index_code from collection_name where date = "2016-12-28 00:00:00" and index_code = 80 or index_code = 85;
 
+and查询
+db.inventory.find( { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] } )
+
 去重查询
 $group 操作符
 $加字段名 做field path
@@ -121,6 +124,23 @@ db.inventory.update(
                    
 $nin not in 查询
 $or  or查询
+
+
+$exists mongodb里判断列是否存在，因为mongodb时schema free，所以不是每个行都有一样的列。这个$exists与sql里的exists要注意对比，sql里的exists是
+至少会返回一行数据，就是说判断是否有一行数据存在。
+
+比如在Northwind数据库中有一个查询为
+SELECT c.CustomerId,CompanyName FROM Customers c
+WHERE EXISTS(
+SELECT OrderID FROM Orders o WHERE o.CustomerID=c.CustomerID) 
+这里面的EXISTS是如何运作呢？子查询返回的是OrderId字段，可是外面的查询要找的是CustomerID和CompanyName字段，这两个字段肯定不在OrderID里面啊，
+这是如何匹配的呢？ 
+EXISTS用于检查子查询是否至少会返回一行数据，该子查询实际上并不返回任何数据，而是返回值True或False
+
+db.inventory.find( { qty: { $exists: true, $nin: [ 5, 15 ] } } )
+This query will select all documents in the inventory collection where the qty field exists and its value does not equal 5 or 15.
+
+
 
 
 
