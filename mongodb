@@ -150,7 +150,9 @@ db.addressBook.find( { "zipCode" : { $type : 2 } } );
 db.addressBook.find( { "zipCode" : { $type : "string" } } );
 the detail list ：https://docs.mongodb.com/manual/reference/operator/query/type/#document-querying-by-data-type
 
-
+复合查询列子：
+db.swIndustryAshare_new.find( {"CancelDate" :{$not: { $type : 10 } } }, {"CancelDate": 1, "_id": 0, "ThirdIndustryName": 1} ).sort({"CancelDate": -1})
+取出CancelDate 不为空，按CancelDate排序
 
 
 
