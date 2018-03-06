@@ -144,6 +144,12 @@ This query will select all documents in the inventory collection where the qty f
 $type selects the documents where the value of the field is an instance of the specified BSON type(s). Querying by data type is 
 useful when dealing with highly unstructured data where data types are not predictable.
 
+db.addressBook.find( { "zipCode" : { $type : 1 } } )
+db.addressBook.find( { "zipCode" : { $type : "double" } } )
+db.addressBook.find( { "zipCode" : { $type : 2 } } );
+db.addressBook.find( { "zipCode" : { $type : "string" } } );
+the detail list ：https://docs.mongodb.com/manual/reference/operator/query/type/#document-querying-by-data-type
+
 
 
 
