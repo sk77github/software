@@ -33,4 +33,8 @@ Volume就是目录或者文件，它可以绕过默认的联合文件系统，�
 
 docker ps  列出容器
 
+docker rm -f $(docker ps -aq) 杀掉所有容器
+
+
+
 
