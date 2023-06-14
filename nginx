@@ -1,1 +1,163 @@
 nginx
+
+install:
+
+ 注意脚本里$的转义
+
+sudo yum install yum-utils
+
+touch /etc/yum.repos.d/nginx.repo
+
+cat
+>>/etc/yum.repos.d/nginx.repo
+<<EOF
+[nginx-stable]
+name=nginx stable repo
+baseurl=http://nginx.org/packages/centos/\$releasever/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+
+[nginx-mainline]
+name=nginx mainline repo
+baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=https://nginx.org/keys/nginx_signing.key
+module_hotfixes=true
+ EOF
+ 
+ 
+nginx.conf
+/usr/local/nginx/conf
+/etc/nginx
+/usr/local/etc/nginx
+/usr/sbin/nginx
+
+ 
+
+启动：
+
+systemctl start nginx
+
+ 
+
+80端口
+
+ 
+
+pid文件
+
+/run/nginx.pid
+
+ 
+
+nginx -s signal
+Where signal may be one of the following:
+
+stop — fast shutdown
+quit — graceful shutdown
+reload — reloading the configuration file
+reopen — reopening the log files
+nginx -s quit
+nginx -s reload
+
+
+------------------------------------------------------------------------------
+就是安装nginx，获取目录分布，把证书和私钥上传到指定目录位置，然后配置nginx conf，重启，完事。
+nginx redhat9 install Chapter 2. Setting up and configuring NGINX Red Hat Enterprise Linux 9 | Red Hat Customer Portal
+
+sudo dnf install nginx    redhat9  安装命令
+systemctl enable nginx
+systemctl start nginx   启动
+
+/usr/share/nginx/html  网页目录
+/usr/sbin/nginx        程序地址
+/etc/nginx/nginx.conf   配置地址
+/etc/pki/tls/private/   私钥地址
+/etc/pki/tls/certs/     证书地址
+
+配置https，阿里云免费证书申请：2022阿里云免费SSL证书申请全过程（图文详解）-阿里云开发者社区 (aliyun.com)
+
+证书文件cert-file-name.pem，
+证书私钥文件cert-file-name.key
+ssl - Difference between pem, crt, key files - Stack Overflow
+
+sudo nginx -t       查看配置文件位置
+
+nginx配置443，
+  在Nginx或Tengine服务器安装SSL证书 (aliyun.com)
+Chapter 2. Setting up and configuring NGINX Red Hat Enterprise Linux 9 | Red Hat Customer Portal
+sudo cat /etc/nginx/nginx.conf
+# For more information on configuration, see:
+# * Official English Documentation: http://nginx.org/en/docs/
+# * Official Russian Documentation: http://nginx.org/ru/docs/
+
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
+include /usr/share/nginx/modules/*.conf;
+
+events {
+worker_connections 1024;
+}
+
+http {
+log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+'$status $body_bytes_sent "$http_referer" '
+'"$http_user_agent" "$http_x_forwarded_for"';
+
+access_log /var/log/nginx/access.log main;
+
+sendfile on;
+tcp_nopush on;
+tcp_nodelay on;
+keepalive_timeout 65;
+types_hash_max_size 4096;
+
+include /etc/nginx/mime.types;
+default_type application/octet-stream;
+
+# Load modular configuration files from the /etc/nginx/conf.d directory.
+# See http://nginx.org/en/docs/ngx_core_module.html#include
+# for more information.
+include /etc/nginx/conf.d/*.conf;
+
+server {
+listen 80;
+listen [::]:80;
+server_name _;
+root /usr/share/nginx/html;
+
+# Load configuration files for the default server block.
+include /etc/nginx/default.d/*.conf;
+
+rewrite ^(.*)$ https://$host$1;
+location / {
+index index.html index.htm;
+}
+
+error_page 404 /404.html;
+location = /404.html {
+}
+
+error_page 500 502 503 504 /50x.html;
+location = /50x.html {
+}
+}
+
+
+server {
+listen 443 ssl;
+server_name xxx.com;
+root /usr/share/nginx/html;
+ssl_certificate /etc/pki/tls/certs/www.xxx.com.pem;
+ssl_certificate_key /etc/pki/tls/private/www.xxx.com.key;
+}
+
+}
+
