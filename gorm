@@ -1,0 +1,7 @@
+CURD:
+Create  
+Delete
+Save
+
+First,Take,Last 查询
+GORM provides First, Take, Last methods to retrieve a single object from the database
