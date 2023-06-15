@@ -75,6 +75,7 @@ systemctl start nginx   启动
 /usr/share/nginx/html  网页目录
 /usr/sbin/nginx        程序地址
 /etc/nginx/nginx.conf   配置地址
+/var/log/nginx          日志地址
 /etc/pki/tls/private/   私钥地址
 /etc/pki/tls/certs/     证书地址
 
@@ -160,4 +161,10 @@ ssl_certificate_key /etc/pki/tls/private/www.xxx.com.key;
 }
 
 }
+
+----------------------------------------------------------------------------------------
+redhat9  nginx config virturl server:
+
+sudo dnf -y install policycoreutils-python-utils
+
 
