@@ -1,0 +1,4 @@
+Using a Reverse Proxy
+If WordPress is hosted behind a reverse proxy that provides SSL, but is hosted itself without SSL, 
+these options will initially send any requests into an infinite redirect loop. To avoid this,
+you may configure WordPress to recognize the HTTP_X_FORWARDED_PROTO header (assuming you have properly configured the reverse proxy to set that header).
