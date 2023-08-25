@@ -1,0 +1,180 @@
+git  on windows:
+
+安装：https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+
+下载：https://git-scm.com/download/win
+
+使用：
+
+0, 查看用户名和邮件 
+
+sudo git config --global  --list
+1，配置用户名和邮箱：
+
+git config --global user.name "zhangsan"
+
+git config --global user.email "zhangsan@xxx.com"
+
+2，创建ssh：
+
+ssh-keygen -t rsa -C "youremail@example.com"
+然后一路回车。
+然后c盘->用户->自己的用户名->.ssh  就有了，把.pub的，也就是公钥的copy下来
+3，登录gitlab 设置公钥
+
+私有url/-/profile/keys  页面
+
+4，在vscode里使用：
+
+https://segmentfault.com/a/1190000016593233
+
+ 
+
+ 
+
+ 
+
+git 常用命令：
+
+ 
+
+git pull
+
+git pull origin 远程分支名：本地分支名
+
+git pull origin oss(远程分支名):remotes/origin/oss（本地分支名）
+
+ 
+
+git branch 查看当前分支
+ 	1.Git branch
+ 	 
+ 	　　　　一般用于分支的操作，比如创建分支，查看分支等等，
+ 	 
+ 	　　　　1.1 git branch
+ 	 
+ 	　　　　　　不带参数：列出本地已经存在的分支，并且在当前分支的前面用"*"标记
+ 	 
+ 	　　　　1.2 git branch -r
+ 	 
+ 	　　　　　　查看远程版本库分支列表
+ 	 
+ 	　　　　1.3 git branch -a
+ 	 
+ 	　　　　　　查看所有分支列表，包括本地和远程
+ 	 
+ 	　　　　1.4 git branch dev
+ 	 
+ 	　　　　　　创建名为dev的分支，创建分支时需要是最新的环境，创建分支但依然停留在当前分支
+ 	 
+ 	　　　　1.5 git branch -d dev
+ 	 
+ 	　　　　　　删除dev分支，如果在分支中有一些未merge的提交，那么会删除分支失败，此时可以使用 git branch -D dev：强制删除dev分支，
+ 	 
+ 	　　　　1.6 git branch -vv
+ 	 
+ 	　　　　　　可以查看本地分支对应的远程分支
+ 	 
+ 	　　　　1.7 git branch -m oldName newName
+ 	 
+ 	　　　　　　给分支重命名
+ 	 
+ 	 
+ 	 
+ 	2. Git checkout
+ 	 
+ 	　　　　1. 操作文件 2. 操作分支
+ 	 
+ 	　　　　2.1 操作文件
+ 	 
+ 	　　　　　　2.1.1 git checkout filename 放弃单个文件的修改
+ 	 
+ 	　　　　　　2.1.2 git checkout . 放弃当前目录下的修改
+ 	 
+ 	　　　　2.2 操作分支
+ 	 
+ 	　　　　　　2.2.1 git checkout master 将分支切换到master
+ 	 
+ 	　　　　　　2.2.2 git checkout -b master 如果分支存在则只切换分支，若不存在则创建并切换到master分支，
+ 	 
+ 	　　　　2.3 查看帮助
+ 	 
+ 	　　　　　　git checkout --help
+ 	 
+ 	　　　　　　当然git checkout还有许多命令，但这些已经能满足我们日常开发所需
+ 	 
+ 	git checkout test 切换分支到test
+ 	 
+ 	git push
+ 	git push的一般形式为 git push <远程主机名> <本地分支名> <远程分支名>
+ 	例如 git push origin master：refs/for/master ，即是将本地的master分支推送到远程主机origin上的对应master分支， origin 是远程主机名，
+ 	第一个master是本地分支名，第二个master是远程分支名。
+ 	1.1 git push origin master
+ 	如果远程分支被省略，如上则表示将本地分支推送到与之存在追踪关系的远程分支（通常两者同名），如果该远程分支不存在，则会被新建
+ 	 
+ 	 
+ 	git tag
+ 	列出现有标签 git tag
+ 	新建标签 git tag -a v1.4 -m 'my version 1.4'
+ 	查看某个标签 git show v1.4
+ 	 
+ 	 
+ 	git init
+ 	git status
+ 	git diff filename
+ 	git add filename （添加文件,提交修改与添加文件一样,与删除时的git rm 一个级别）
+ 	git commit -m "xxx" （真添加文件 提交到仓库）
+ 	git push（本地提交更改过的代码到远程git库，注意是全部）
+ 	git pull（服务器从远程git库拉全部更改过的代码，注意是全部）
+ 	rm text.txt（本地删除文件）
+ 	git checkout -- test.txt（误删后 仓库恢复文件）
+ 	git rm test.txt(真想删除 仓库删文件）
+ 	git commit -m "remove test.txt"（真想删除 将仓库删提交）
+ 	git rm . （git commit -am "message" (a表示所有 m备注信息）删除当前目录所有文件）
+ 	 
+ 	git clone git@jdb-dev.com:server/support.git （从远端服务器clone代码）
+ 	git reset --hard（删除服务器文件后，在执行 git pull)
+ 	git mv filefrom fileto （重命名）
+ 	git log
+ 	git reset --hard commit_id
+ 	git reflog
+ 	git diff HEAD -- filename (查看工作区与版本库区别)
+ 	 
+ 	git remote add origin https://github.com/sk77github/sk77github.git
+ 	git push -u origin master
+ 	git remote
+ 	git remote -v （查看远程项目名与地址）
+ 	 
+ 	 
+ 	Command line instructions
+ 	 
+ 	Git global setup
+ 	 
+ 	git config --global user.name "许武"
+ 	git config --global user.email "xuwu@jiedaibao.com"
+ 	 
+ 	Create a new repository
+ 	 
+ 	git clone git@jdb-dev.com:server/support.git
+ 	cd support
+ 	touch README.md
+ 	git add README.md
+ 	git commit -m "add README"
+ 	git push -u origin master
+ 	 
+ 	Existing folder or Git repository
+ 	 
+ 	cd existing_folder
+ 	git init
+ 	git remote add origin git@jdb-dev.com:server/support.git
+ 	git add .
+ 	git commit
+ 	git push -u origin master
+ 	 
+ 	 
+ 	 
+ 	--------------------------------------------------------------------------------------------------------------
+ 	常见问题解决
+ 	 
+ 	报gnome-ssh-askpass:14344
+ 	执行unset SSH_ASKPASS
