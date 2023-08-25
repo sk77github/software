@@ -36,6 +36,11 @@ https://segmentfault.com/a/1190000016593233
 
 git 常用命令：
 
+查看远程地址：
+git remote -v
+设定远程地址：
+git remote set-url origin git@codeup.aliyun.com:f7e6d/chat-vector.git
+
  
 
 git pull
