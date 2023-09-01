@@ -1,0 +1,34 @@
+1,
+https://platform.openai.com/docs/quickstart/build-your-application
+
+response = openai.Completion.create(
+  model="text-davinci-003",
+  prompt=generate_prompt(animal),
+  temperature=0.6
+)
+
+----------------------------------------------------------------------------------------------------------
+2,
+import os
+import openai
+openai.api_key = os.getenv("OPENAI_API_KEY")
+response = openai.ChatCompletion.create(
+  model="gpt-4",
+  messages=[],
+  temperature=0,
+  max_tokens=1024
+)
+
+-------------------------------------------------------------------------------------------------------------------
+the difference between 1 and 2 : 
+https://stackoverflow.com/questions/76192496/openai-v1-completions-vs-v1-chat-completions-end-points
+the offical website clear more :
+https://platform.openai.com/docs/models/model-endpoint-compatibility
+
+so , we focus on chat completion:
+https://platform.openai.com/docs/guides/gpt/chat-completions-api
+
+
+-----------------------------------------------------------------------------------------------------------
+useful example:
+https://platform.openai.com/examples
