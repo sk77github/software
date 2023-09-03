@@ -32,3 +32,13 @@ https://platform.openai.com/docs/guides/gpt/chat-completions-api
 -----------------------------------------------------------------------------------------------------------
 useful example:
 https://platform.openai.com/examples
+
+
+if conversation is too long :
+https://platform.openai.com/docs/guides/gpt-best-practices/strategy-split-complex-tasks-into-simpler-subtasks
+
+--------------------------------------------------------------------------
+best practices:
+https://platform.openai.com/docs/guides/gpt-best-practices/
+
+reading the docs in offical website and reading book ,paper ,before you reading the article from wechat 
