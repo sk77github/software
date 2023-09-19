@@ -1,0 +1,7 @@
+ubuntu install :
+https://github.com/nodesource/distributions
+
+and need:
+sudo dpkg --remove --force-remove-reinstreq libnode-dev
+sudo dpkg --remove --force-remove-reinstreq libnode72:amd64
+from :https://unix.stackexchange.com/questions/627635/upgrading-nodejs-on-ubuntu-how-to-fix-broken-pipe-error
