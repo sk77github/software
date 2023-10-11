@@ -1,3 +1,7 @@
+docker run --name merchant-mysql --restart  always -p 3306:3306 -v /opt/dockerVolumes/mysql-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8
+docker run --name merchant-redis --restart  always -p 6379:6379  -d redis  --requirepass 123456
+----------------------------------------------------------------------------------------------------------------------
+
 install  docker ce
 
 Install using the repository：（https://docs.docker.com/install/linux/docker-ce/centos/#set-up-the-repository）
