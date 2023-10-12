@@ -29,6 +29,29 @@ ssh-keygen -t rsa -C "youremail@example.com"
 https://segmentfault.com/a/1190000016593233
 
  
+当我们有两个仓库地址，对应两个账户的时候，这时候我们需要配置不同的ssh，以便让不同的账户操作时使用不同的ssh：
+在.ssh目录下有一个config文件，内容如下：
+
+Host host1
+HostName codeup.aliyun.com
+IdentityFile ~/.ssh/id_ed25519
+PreferredAuthentications publickey
+IdentityAgent none
+IdentitiesOnly yes
+
+
+Host klgame
+HostName codeup.aliyun.com
+IdentityFile ~/.ssh/klgame/id_rsa (注意这里创建了一个klgame这个目录，这是生成ssh公钥时创建的，生成ssh公钥时不要一路回车，而是指定这个目录，然后这里IdentityFile的配置就是公钥的路径)
+PreferredAuthentications publickey
+IdentityAgent none
+IdentitiesOnly yes
+
+主要就是Host项，和IdentityFile项
+git remote -v
+origin  git@klgame:5fa13f885/klgame.git (fetch)
+host项就是别名的意思，使用时可以这样：git@klgame:5fa138ce7f885/klgame.git   那么git@klgame 实际上就是git@codeup.aliyun.com
+IdentityFile项就是上面说的，公钥的路径，每个项目用不同的目录单独放置。
 
  
 
