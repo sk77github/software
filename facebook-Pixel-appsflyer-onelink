@@ -1,0 +1,49 @@
+how fbp and fbc Parameters work together with appsflyer?
+
+
+GPT-4
+
+Poe
+The fbp (Facebook browser ID) and fbc (Facebook click ID) are parameters used by Facebook for tracking user interactions and attributing events to specific ads. They are part of Facebook's Conversions API and enable better tracking of user actions across websites and apps.
+
+Here's how they work in the context of AppsFlyer:
+
+User Interaction: When a user interacts with a Facebook ad (such as by clicking on it), Facebook generates a click ID (fbc) for that interaction. This click ID is included in the URL of the ad.
+
+Redirecting to AppsFlyer: The ad URL redirects the user to your app via AppsFlyer’s OneLink. The fbc parameter is included in the redirect URL.
+
+AppsFlyer Attribution: When the user installs and opens the app, the AppsFlyer SDK in the app communicates with AppsFlyer servers to attribute the app open to the specific marketing campaign and the specific ad click, based on the fbc parameter.
+
+Sending Events to Facebook: When AppsFlyer tracks an in-app event (like a purchase), it can send that event data to Facebook for ad attribution. The event data includes the fbc parameter, allowing Facebook to attribute the event to the original ad click.
+
+The fbp parameter (Facebook Browser ID) is a similar concept, but for tracking user interactions on websites. When a user visits a website with the Facebook Pixel installed, the Pixel sets a cookie (_fbp) in the user's browser to track their interactions with the site. If the website uses AppsFlyer's OneLink for web-to-app conversions, the fbp parameter can be included in the OneLink URL to attribute app installs and in-app events to the original website visit.
+
+In both cases, the fbc and fbp parameters allow AppsFlyer and Facebook to work together to track user interactions across multiple platforms (Facebook ads, websites, and apps) and attribute app installs and in-app events to specific marketing sources. This helps marketers understand the effectiveness of their ad campaigns and optimize their marketing strategies.
+
+Remember that handling fbc and fbp parameters should be done in compliance with all applicable privacy regulations and Facebook's Platform Terms and Policies.
+
+
+how to set fbp and fbc to appsflyer onelink ,give a example step by step?
+
+
+GPT-4
+
+Poe
+To use fbp (Facebook Browser ID) and fbc (Facebook Click ID) with AppsFlyer's OneLink, you'll need to ensure that these parameters are included in the OneLink URL. Here's a step-by-step guide on how to make this work:
+
+Generate a OneLink URL in AppsFlyer: You can do this by going to the OneLink management section of the AppsFlyer dashboard and creating a new OneLink URL for your app.
+
+Set Up Facebook Ads with OneLink URL: When you set up your Facebook ads, use the OneLink URL as the destination URL for the ad.
+
+Include fbc Parameter in the URL: Facebook automatically includes the fbc parameter in the ad URL when a user clicks on the ad. This fbc parameter contains the click ID for the ad click.
+
+Capture fbp Parameter on Your Website: If you're using OneLink for web-to-app conversions, you'll need to capture the fbp parameter on your website. This requires using the Facebook Pixel on your website to track user interactions and capture the fbp parameter.
+
+Include fbp Parameter in the OneLink URL: If a user clicks on a OneLink URL on your website, you'll need to dynamically include the fbp parameter in the OneLink URL. This might involve using JavaScript or a similar technology to read the _fbp cookie set by the Facebook Pixel and add it to the OneLink URL as a parameter.
+
+For example, assuming your OneLink URL is https://example.onelink.me/123456789, you might dynamically generate a URL like https://example.onelink.me/123456789?af_dp=myapp%3A%2F%2F&fbp=fb.1.1234567890 where fbp=fb.1.1234567890 is the fbp parameter read from the _fbp cookie.
+
+AppsFlyer Attribution: When a user installs and opens your app via the OneLink URL, AppsFlyer can use the fbc and fbp parameters in the URL to attribute the app install and any subsequent in-app events to the original Facebook ad click or website visit.
+Remember to follow all applicable privacy regulations and Facebook's Platform Terms and Policies when handling fbc and fbp parameters. The exact implementation may vary based on your specific requirements and the technologies you're using.
+
+Please note that the process might have changed after my last training data in September 2021. Always refer to the most recent AppsFlyer and Facebook Developer documentation for the latest and most accurate information.
